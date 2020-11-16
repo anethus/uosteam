@@ -432,63 +432,108 @@ while not dead
     pushlist 'moves' 'SouthEast'
     while list 'moves' > 0
       @clearjournal
-	  if not war self
-      turn 'moves[0]'
-      for 0 to 2
-        walk 'moves[0]'
-        pause 250
-      endfor
-      poplist 'moves' 'front'
-      while not @injournal 'You do not see any harvestable resources nearby.' 'system'
-        //
-        // Equip pick 0xe86 // Axe 0xf44
-        //
-        if not @findlayer 'self' 2
-          @findtype 0xf44 'any' 'backpack'
-          canceltarget
-          @useobject 'found'
-          pause 1500
-        endif
-        //
-        // Pick check
-        //
-        if not @findlayer 'self' 2
-          msg "darnit! my pick broke!"
-          @clearlist 'moves'
-          break
-        endif
-        //
-        // Health check
-        //
-        if hits < maxhits
-          @clearlist 'moves'
-          break
-        endif
-        //
-        // Mine
-        //
-		if not war self
-			useobject 'lefthand'
-			waitfortarget 2000
-			target! 'self'
-			pause 1000
-		endif
-        //
-        // Tracking window
-        //
-        if timer 'track' > 6000
-          useskill 'Tracking'
-          pause 1000
-          if @gumpexists 0xfe5c638b
-            @settimer 'track' 0
-            replygump 0xfe5c638b 5
+      if not war self
+        turn 'moves[0]'
+        for 0 to 2
+          walk 'moves[0]'
+          pause 250
+        endfor
+        poplist 'moves' 'front'
+        while not @injournal 'You do not see any harvestable resources nearby.' 'system'
+          //
+          // Equip pick 0xe86 // Axe 0xf44
+          //
+          if not @findlayer 'self' 2
+            @findtype 0xf44 'any' 'backpack'
+            canceltarget
+            @useobject 'found'
+            pause 1500
+          endif
+          //
+          // Pick check
+          //
+          if not @findlayer 'self' 2
+            msg "darnit! my pick broke!"
+            @clearlist 'moves'
+            break
+          endif
+          //
+          // Health check
+          //
+          if hits < maxhits
+            @clearlist 'moves'
+            break
+          endif
+          //
+          // Mine
+          //
+          if not war self
+            useobject 'lefthand'
+            waitfortarget 2000
+            target! 'self'
             pause 1000
           endif
-        else
-          pause 500
-        endif
+          //
+          // Tracking window
+          //
+          if timer 'track' > 6000
+            useskill 'Tracking'
+            pause 1000
+            if @gumpexists 0xfe5c638b
+              @settimer 'track' 0
+              replygump 0xfe5c638b 5
+              pause 1000
+            endif
+          else
+            pause 500
+          endif
+          //
+          // Tracking Alerts
+          //
+          if @injournal "now tracking" 'system'
+            headmsg "ALARM! ALARM!" 22
+            @canceltarget
+            cast "Recall"
+            waitfortarget 5000
+            target! 'Runebooks[0]'
+            @clearlist 'moves'
+            pause 5000
+            @clearjournal
+            break
+          endif
+          //
+          // Proximity Alerts
+          //
+          @getenemy 'murderer' 'enemy' 'next'
+          if @findobject 'enemy' and @inrange 'enemy' 12
+            headmsg "ALARM! ALARM!" 22
+            @canceltarget
+            cast "Recall"
+            waitfortarget 5000
+            target! 'Runebooks[0]'
+            @clearlist 'moves'
+            pause 5000
+            @clearjournal
+            break
+          endif
+          //
+          // Weight
+          //
+          if diffweight < 30
+            @clearlist 'moves'
+            break
+            continue
+          endif
+          //
+          // Remind
+          //
+          if timer 'remind' > 60000
+            playsound 'drip.wav'
+            settimer 'remind' 0
+          endif
+        endwhile
         //
-        // Tracking Alerts
+        // Another check
         //
         if @injournal "now tracking" 'system'
           headmsg "ALARM! ALARM!" 22
@@ -496,57 +541,12 @@ while not dead
           cast "Recall"
           waitfortarget 5000
           target! 'Runebooks[0]'
-          @clearlist 'moves'
-          pause 5000
           @clearjournal
-          break
-        endif
-        //
-        // Proximity Alerts
-        //
-        @getenemy 'murderer' 'enemy' 'next'
-        if @findobject 'enemy' and @inrange 'enemy' 12
-          headmsg "ALARM! ALARM!" 22
-          @canceltarget
-          cast "Recall"
-          waitfortarget 5000
-          target! 'Runebooks[0]'
-          @clearlist 'moves'
           pause 5000
-          @clearjournal
           break
         endif
-        //
-        // Weight
-        //
-        if diffweight < 30
-          @clearlist 'moves'
-          break
-          continue
-        endif
-        //
-        // Remind
-        //
-        if timer 'remind' > 60000
-          playsound 'drip.wav'
-          settimer 'remind' 0
-        endif
-      endwhile
-      //
-      // Another check
-      //
-      if @injournal "now tracking" 'system'
-        headmsg "ALARM! ALARM!" 22
-        @canceltarget
-        cast "Recall"
-        waitfortarget 5000
-        target! 'Runebooks[0]'
-        @clearjournal
-        pause 5000
-        break
       endif
     endwhile
-	endif
     pause 1000
   endif
   //
