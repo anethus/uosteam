@@ -264,12 +264,12 @@ while not dead
     @pushlist 'Runes' 47
     @pushlist 'Runes' 53
     @pushlist 'Runes' 59
-    //@pushlist 'Runes' 65
-    //@pushlist 'Runes' 71
-    //@pushlist 'Runes' 77
-    //@pushlist 'Runes' 83
-    //@pushlist 'Runes' 89
-    //@pushlist 'Runes' 95
+    @pushlist 'Runes' 65
+    @pushlist 'Runes' 71
+    @pushlist 'Runes' 77
+    @pushlist 'Runes' 83
+    @pushlist 'Runes' 89
+    @pushlist 'Runes' 95
   endif
   //
   // Check : regs, weight, picks
