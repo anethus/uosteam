@@ -472,7 +472,7 @@ while not dead
 				useobject 'righthand'
 				waitfortarget 2000
 				target! 'self'
-				pause 1000
+				pause 500
 			endif
 			//
 			// Tracking window
