@@ -381,11 +381,11 @@ while not dead
   @createtimer 'craft'
   while timer 'craft' < 5000
     if @ingump '0x38920abd' 'You pour'
-	  poplist 'ile' 'front'
+	  poplist 'cnt' 'front'
       break
     endif
     if @ingump '0x38920abd' 'You create'
-	  poplist 'ile' 'front'
+	  poplist 'cnt' 'front'
       break
     endif
     if @ingump '0x38920abd' 'You fail'
