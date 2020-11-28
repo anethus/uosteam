@@ -1,7 +1,19 @@
+///////////////////////////////////////
+//
+//	1. Uncomment potion that you want to create
+//	2. Set count of potion to create
+//	3. Enjoy
+//
+///////////////////////////////////////
+
 sysmsg "Alchemy Society" 73
 @removelist 'potion'
 @createlist 'potion'
-
+////////////////////////////////////////////////////
+//
+// Set active Potion by removeing comment ('//') before it
+//
+////////////////////////////////////////////////////
 //pushlist 'potion' 'Lesser Heal'
 //pushlist 'potion' 'Heal'
 //pushlist 'potion' 'Greater Heal'
@@ -26,6 +38,28 @@ pushlist 'potion' 'Deadly Poison'
 //pushlist 'potion' 'Explosion'
 //pushlist 'potion' 'Greater Explosion'
 
+@removelist 'cnt'
+@createlist 'cnt'
+///////////////////////////////////////////////////////
+// Set how meny of potions you want to create
+// Set number aftet `to`
+// For example:
+//	    for 0 to 100
+// will create 100 potions
+///////////////////////////////////////////////////////
+for 0 to 10
+  pushlist 'cnt' 0x0
+  pause 10
+endfor
+
+
+//
+//	Check for number of potions
+//
+if list 'potion' > 1
+	sysmsg 'Ej.... nie umiem zrobic wiecej niz jeden typ butli' 55
+	stop
+endif
 //
 // Potions list
 //
@@ -151,6 +185,13 @@ endif
 // Main loop
 //
 while not dead
+  //
+  // Check for full makes
+  //
+  if list 'cnt' <= 0
+	sysmsg "My work is done, i have to go....." 91
+	stop
+  endif
   //
   // Check for a keg or transfer empty one
   //
@@ -340,9 +381,11 @@ while not dead
   @createtimer 'craft'
   while timer 'craft' < 5000
     if @ingump '0x38920abd' 'You pour'
+	  poplist 'ile' 'front'
       break
     endif
     if @ingump '0x38920abd' 'You create'
+	  poplist 'ile' 'front'
       break
     endif
     if @ingump '0x38920abd' 'You fail'
