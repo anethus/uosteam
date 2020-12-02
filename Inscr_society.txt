@@ -1,4 +1,25 @@
-// Credit : Craigs here
+@removelist 'scrolls'
+@createlist 'scrolls'
+
+// 5 lvl
+pushlist 'scrolls' 'Blade Spirits'
+pushlist 'scrolls' 'Dispel Field'
+pushlist 'scrolls' 'Incognito'
+pushlist 'scrolls' 'Magic Reflection'
+pushlist 'scrolls' 'Mind Blast'
+pushlist 'scrolls' 'Paralyze'
+pushlist 'scrolls' 'Poison Field'
+pushlist 'scrolls' 'Summon Creature'
+// 6 lvl
+pushlist 'scrolls' 'Dispel'
+pushlist 'scrolls' 'Energy Bolt'
+pushlist 'scrolls' 'Explosion'
+pushlist 'scrolls' 'Invisibility'
+pushlist 'scrolls' 'Mark'
+pushlist 'scrolls' 'Mass Curse'
+pushlist 'scrolls' 'Paralyze Field'
+pushlist 'scrolls' 'Reveal'
+
 if not @findobject 'mats'
   headmsg 'Target Scrolls and Cloth Container' 57
   promptalias 'mats'
@@ -37,42 +58,84 @@ if list 'mats' == 0
   @pushlist 'mats' 0x1766
   @pushlist 'mats' 0xef3
 endif
-if skill 'inscription' < 60
-  usetype 0xfc0
-  waitforgump 0x38920abd 15000
-  replygump 0x38920abd 107
-  waitforgump 0x38920abd 15000
-  replygump 0x38920abd 203
-  waitforgump 0x38920abd 15000
-  waitforgump 0x38920abd 15000
-elseif skill 'inscription' < 80
-  usetype 0xfc0
-  waitforgump 0x38920abd 15000
-  replygump 0x38920abd 108
-  waitforgump 0x38920abd 15000
-  replygump 0x38920abd 201
-  waitforgump 0x38920abd 15000
-  waitforgump 0x38920abd 15000
-elseif skill 'inscription' < 100
-  usetype 0xfc0
-  waitforgump 0x38920abd 2000
-  replygump 0x38920abd 100
-  waitforgump 0x38920abd 2000
-  replygump 0x38920abd 200
-  waitforgump 0x38920abd 2000
-  waitforgump 0x38920abd 2000
-elseif skill 'inscription' < 120
-  usetype 0xfc0
-  waitforgump 0x38920abd 2000
-  replygump 0x38920abd 101
-  waitforgump 0x38920abd 2000
-  replygump 0x38920abd 200
-  waitforgump 0x38920abd 2000
-  waitforgump 0x38920abd 2000
+
+// use Pens
+sysmsg "Creating scroll" 91
+@findtype 0xfc0 'any' 'backpack'
+@useobject 'found'
+waitforgump 0x38920abd
+
+// Select Scrolls
+if @inlist 'scrolls' 'Blade Spirits'
+  replaygump 0x38920abd 107
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 200
+elseif @inlist 'scrolls' 'Dispel Field'
+  replaygump 0x38920abd 107
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 201
+elseif @inlist 'scrolls' 'Incognito'
+  replaygump 0x38920abd 107
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 202
+elseif @inlist 'scrolls' 'Magic Reflection'
+  replaygump 0x38920abd 107
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 203
+elseif @inlist 'scrolls' 'Mind Blast'
+  replaygump 0x38920abd 107
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 204
+elseif @inlist 'scrolls' 'Paralyze'
+  replaygump 0x38920abd 107
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 205
+elseif @inlist 'scrolls' 'Poison Field'
+  replaygump 0x38920abd 107
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 206
+elseif @inlist 'scrolls' 'Summon Creature'
+  replaygump 0x38920abd 107
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 207
+elseif @inlist 'scrolls' 'Dispel'
+  replaygump 0x38920abd 108
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 200
+elseif @inlist 'scrolls' 'Energy Bolt'
+  replaygump 0x38920abd 108
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 201
+elseif @inlist 'scrolls' 'Explosion'
+  replaygump 0x38920abd 108
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 202
+elseif @inlist 'scrolls' 'Invisibility'
+  replaygump 0x38920abd 108
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 203
+elseif @inlist 'scrolls' 'Mark'
+  replaygump 0x38920abd 108
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 204
+elseif @inlist 'scrolls' 'Mass Curse'
+  replaygump 0x38920abd 108
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 205
+elseif @inlist 'scrolls' 'Paralyze Field'
+  replaygump 0x38920abd 108
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 206
+elseif @inlist 'scrolls' 'Reveal'
+  replaygump 0x38920abd 108
+  waitforgump 0x38920abd
+  replaygump 0x38920abd 207
 else
-  headmsg 'I am now a Legendary Scribe!'
-  stop
+    headmsg "Unable to figure out scrolls you requested" 91
+    pause 5000
+    continue
 endif
+
 for 0 to 'fonsRecycler'
   while @findtype fonsRecycler[] 'any' 'backpack'
     usetype 0xfc0
