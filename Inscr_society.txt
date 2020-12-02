@@ -1,5 +1,16 @@
+///////////////////////////////////////
+//
+//	1. Uncomment potion that you want to create
+//	2. Set count of potion to create (go to line 41)
+//	3. Enjoy
+//
+///////////////////////////////////////
+
 @removelist 'scrolls'
 @createlist 'scrolls'
+@removelist 'cnt'
+@createlist 'cnt'
+
 // 5 lvl
 pushlist 'scrolls' 'Blade Spirits'
 //pushlist 'scrolls' 'Dispel Field'
@@ -18,19 +29,28 @@ pushlist 'scrolls' 'Blade Spirits'
 //pushlist 'scrolls' 'Mass Curse'
 //pushlist 'scrolls' 'Paralyze Field'
 //pushlist 'scrolls' 'Reveal'
-@removelist 'cnt'
-@createlist 'cnt'
+
+
 ///////////////////////////////////////////////////////
-// Set how meny of potions you want to create
+// Set how meny of scrolls you want to create
 // Set number aftet `to`
 // For example:
 //    for 0 to 100
-// will create 100 potions
+// will create 100 scrolls
 ///////////////////////////////////////////////////////
 for 0 to 3
   pushlist 'cnt' 0x0
   pause 10
 endfor
+
+//
+//	Check for number of scrolls
+//
+if list 'scrolls' > 1
+  sysmsg 'Ej.... za duzo wybrales scolli' 0x55
+  stop
+endif
+
 if not @findobject 'mats'
   headmsg 'Target Scrolls and Cloth Container' 57
   promptalias 'mats'
