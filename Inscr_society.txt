@@ -1,16 +1,14 @@
 ///////////////////////////////////////
 //
-//	1. Uncomment potion that you want to create
-//	2. Set count of potion to create (go to line 41)
-//	3. Enjoy
+//1. Uncomment potion that you want to create
+//2. Set count of potion to create (go to line 41)
+//3. Enjoy
 //
 ///////////////////////////////////////
-
 @removelist 'scrolls'
 @createlist 'scrolls'
 @removelist 'cnt'
 @createlist 'cnt'
-
 // 5 lvl
 pushlist 'scrolls' 'Blade Spirits'
 //pushlist 'scrolls' 'Dispel Field'
@@ -29,8 +27,6 @@ pushlist 'scrolls' 'Blade Spirits'
 //pushlist 'scrolls' 'Mass Curse'
 //pushlist 'scrolls' 'Paralyze Field'
 //pushlist 'scrolls' 'Reveal'
-
-
 ///////////////////////////////////////////////////////
 // Set how meny of scrolls you want to create
 // Set number aftet `to`
@@ -42,15 +38,13 @@ for 0 to 3
   pushlist 'cnt' 0x0
   pause 10
 endfor
-
 //
-//	Check for number of scrolls
+//Check for number of scrolls
 //
 if list 'scrolls' > 1
   sysmsg 'Ej.... za duzo wybrales scolli' 0x55
   stop
 endif
-
 if not @findobject 'mats'
   headmsg 'Target Scrolls and Cloth Container' 57
   promptalias 'mats'
@@ -178,4 +172,13 @@ while not dead
     movetype 0xef3 'mats' 'backpack' 1 0 0 0 100
     pause 1000
   endif
+  //
+  // World save check
+  //
+  if @injournal 'world will save' 'system'
+    sysmsg 'pausing for world save'
+    @clearjournal
+    pause 30000
+  endif
+  pause 500
 endwhile
