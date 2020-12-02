@@ -1,52 +1,41 @@
 @removelist 'scrolls'
 @createlist 'scrolls'
-
 // 5 lvl
 pushlist 'scrolls' 'Blade Spirits'
-pushlist 'scrolls' 'Dispel Field'
-pushlist 'scrolls' 'Incognito'
-pushlist 'scrolls' 'Magic Reflection'
-pushlist 'scrolls' 'Mind Blast'
-pushlist 'scrolls' 'Paralyze'
-pushlist 'scrolls' 'Poison Field'
-pushlist 'scrolls' 'Summon Creature'
+//pushlist 'scrolls' 'Dispel Field'
+//pushlist 'scrolls' 'Incognito'
+//pushlist 'scrolls' 'Magic Reflection'
+//pushlist 'scrolls' 'Mind Blast'
+//pushlist 'scrolls' 'Paralyze'
+//pushlist 'scrolls' 'Poison Field'
+//pushlist 'scrolls' 'Summon Creature'
 // 6 lvl
-pushlist 'scrolls' 'Dispel'
-pushlist 'scrolls' 'Energy Bolt'
-pushlist 'scrolls' 'Explosion'
-pushlist 'scrolls' 'Invisibility'
-pushlist 'scrolls' 'Mark'
-pushlist 'scrolls' 'Mass Curse'
-pushlist 'scrolls' 'Paralyze Field'
-pushlist 'scrolls' 'Reveal'
-
+//pushlist 'scrolls' 'Dispel'
+//pushlist 'scrolls' 'Energy Bolt'
+//pushlist 'scrolls' 'Explosion'
+//pushlist 'scrolls' 'Invisibility'
+//pushlist 'scrolls' 'Mark'
+//pushlist 'scrolls' 'Mass Curse'
+//pushlist 'scrolls' 'Paralyze Field'
+//pushlist 'scrolls' 'Reveal'
+@removelist 'cnt'
+@createlist 'cnt'
+///////////////////////////////////////////////////////
+// Set how meny of potions you want to create
+// Set number aftet `to`
+// For example:
+//    for 0 to 100
+// will create 100 potions
+///////////////////////////////////////////////////////
+for 0 to 3
+  pushlist 'cnt' 0x0
+  pause 10
+endfor
 if not @findobject 'mats'
   headmsg 'Target Scrolls and Cloth Container' 57
   promptalias 'mats'
 endif
-if not @findtype 0xf9f 'any' 'backpack'
-  headmsg 'Get some fuckin scissors' 33
-  stop
-endif
-if not @findobject 'Spellbook'
-  headmsg 'Select Your Spellbook' 21
-  promptalias 'Spellbook'
-endif
 ignoreobject 'Spellbook'
-if not listexists 'fonsRecycler'
-  createlist 'fonsRecycler'
-endif
-if list 'fonsRecycler' == 0
-  @pushlist 'fonsRecycler' 0x1f50
-  @pushlist 'fonsRecycler' 0x1f56
-  @pushlist 'fonsRecycler' 0xefa
-endif
-if not listexists 'fonsHats'
-  createlist 'fonsHats'
-endif
-if list 'fonsHats' == 0
-  @pushlist 'fonsHats' 0x1718
-endif
 if not @findtype 0xfc0 'any' 'backpack'
   headmsg 'No More Pens' 44
   stop
@@ -55,127 +44,118 @@ if not listexists 'mats'
   @createlist 'mats'
 endif
 if list 'mats' == 0
-  @pushlist 'mats' 0x1766
-  @pushlist 'mats' 0xef3
+  @pushlist 'mats' 0xef3 // bancScroll
 endif
-
-// use Pens
-sysmsg "Creating scroll" 91
-@findtype 0xfc0 'any' 'backpack'
-@useobject 'found'
-waitforgump 0x38920abd
-
-// Select Scrolls
-if @inlist 'scrolls' 'Blade Spirits'
-  replaygump 0x38920abd 107
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 200
-elseif @inlist 'scrolls' 'Dispel Field'
-  replaygump 0x38920abd 107
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 201
-elseif @inlist 'scrolls' 'Incognito'
-  replaygump 0x38920abd 107
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 202
-elseif @inlist 'scrolls' 'Magic Reflection'
-  replaygump 0x38920abd 107
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 203
-elseif @inlist 'scrolls' 'Mind Blast'
-  replaygump 0x38920abd 107
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 204
-elseif @inlist 'scrolls' 'Paralyze'
-  replaygump 0x38920abd 107
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 205
-elseif @inlist 'scrolls' 'Poison Field'
-  replaygump 0x38920abd 107
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 206
-elseif @inlist 'scrolls' 'Summon Creature'
-  replaygump 0x38920abd 107
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 207
-elseif @inlist 'scrolls' 'Dispel'
-  replaygump 0x38920abd 108
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 200
-elseif @inlist 'scrolls' 'Energy Bolt'
-  replaygump 0x38920abd 108
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 201
-elseif @inlist 'scrolls' 'Explosion'
-  replaygump 0x38920abd 108
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 202
-elseif @inlist 'scrolls' 'Invisibility'
-  replaygump 0x38920abd 108
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 203
-elseif @inlist 'scrolls' 'Mark'
-  replaygump 0x38920abd 108
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 204
-elseif @inlist 'scrolls' 'Mass Curse'
-  replaygump 0x38920abd 108
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 205
-elseif @inlist 'scrolls' 'Paralyze Field'
-  replaygump 0x38920abd 108
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 206
-elseif @inlist 'scrolls' 'Reveal'
-  replaygump 0x38920abd 108
-  waitforgump 0x38920abd
-  replaygump 0x38920abd 207
-else
+while not dead
+  //
+  // Check for full makes
+  //
+  if list 'cnt' <= 0
+    sysmsg "My work is done, i have to go....." 91
+    stop
+  endif
+  // use Pens
+  sysmsg "Creating scroll" 91
+  @findtype 0xfc0 'any' 'backpack'
+  @useobject 'found'
+  waitforgump 0x38920abd 5000
+  // Select Scrolls
+  if @inlist 'scrolls' 'Blade Spirits'
+    replygump  0x38920abd 107
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 200
+  elseif @inlist 'scrolls' 'Dispel Field'
+    replygump  0x38920abd 107
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 201
+  elseif @inlist 'scrolls' 'Incognito'
+    replygump  0x38920abd 107
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 202
+  elseif @inlist 'scrolls' 'Magic Reflection'
+    replygump  0x38920abd 107
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 203
+  elseif @inlist 'scrolls' 'Mind Blast'
+    replygump  0x38920abd 107
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 204
+  elseif @inlist 'scrolls' 'Paralyze'
+    replygump  0x38920abd 107
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 205
+  elseif @inlist 'scrolls' 'Poison Field'
+    replygump  0x38920abd 107
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 206
+  elseif @inlist 'scrolls' 'Summon Creature'
+    replygump  0x38920abd 107
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 207
+  elseif @inlist 'scrolls' 'Dispel'
+    replygump  0x38920abd 108
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 200
+  elseif @inlist 'scrolls' 'Energy Bolt'
+    replygump  0x38920abd 108
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 201
+  elseif @inlist 'scrolls' 'Explosion'
+    replygump  0x38920abd 108
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 202
+  elseif @inlist 'scrolls' 'Invisibility'
+    replygump  0x38920abd 108
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 203
+  elseif @inlist 'scrolls' 'Mark'
+    replygump  0x38920abd 108
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 204
+  elseif @inlist 'scrolls' 'Mass Curse'
+    replygump  0x38920abd 108
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 205
+  elseif @inlist 'scrolls' 'Paralyze Field'
+    replygump  0x38920abd 108
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 206
+  elseif @inlist 'scrolls' 'Reveal'
+    replygump  0x38920abd 108
+    waitforgump 0x38920abd 5000
+    replygump  0x38920abd 207
+  else
     headmsg "Unable to figure out scrolls you requested" 91
     pause 5000
     continue
-endif
-
-for 0 to 'fonsRecycler'
-  while @findtype fonsRecycler[] 'any' 'backpack'
-    usetype 0xfc0
-    waitforgump 0x38920abd 2000
-    replygump 0x38920abd 3
-    waitfortarget 15000
-    @target! 'found'
-    waitforgump 0x38920abd 2000
+  endif
+  @removetimer 'craft'
+  @createtimer 'craft'
+  while timer 'craft' < 5000
+    if @ingump '0x38920abd' 'You pour'
+      poplist 'cnt' 'front'
+      break
+    endif
+    if @ingump '0x38920abd' 'You create'
+      poplist 'cnt' 'front'
+      break
+    endif
+    if @ingump '0x38920abd' 'You fail'
+      break
+    endif
+    if @ingump 'any' 'have the resources'
+      sysmsg 'BRAK MATERIALU' 0x55
+      stop
+    endif
+    if @ingump 'any' 'worn out'
+      break
+    endif
     pause 100
   endwhile
-endfor
-for 0 to 'fonsHats'
-  while @findtype fonsHats[] 'any' 'backpack'
-    usetype 0xf9f
-    waitfortarget 2000
-    @target! 'found'
-    pause 750
-  endwhile
-endfor
-if skill 'inscription' >= 100
-  for 0 to 'mats'
-    if not @findtype mats[] '0' 'backpack'
-      useobject 'mats'
-      pause 700
-      movetype mats[] 'mats''backpack' 1 0 0 0 100
-      pause 1000
-    endif
-    while @findtype mats[] '0' 'backpack' and @amount 'found' <= 20
-      useobject 'mats'
-      pause 700
-      movetype mats[] 'mats''backpack' 1 0 0 0 100
-      pause 1000
-    endwhile
-  endfor
-else
   if @findtype 0xef3 '0' 'backpack' and @amount 'found' <= 20
     useobject 'mats'
     pause 700
-    movetype 0xef3 'mats''backpack' 1 0 0 0 100
+    movetype 0xef3 'mats' 'backpack' 1 0 0 0 100
     pause 1000
   endif
-endif
-replay
+endwhile
