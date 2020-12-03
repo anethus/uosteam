@@ -1,6 +1,5 @@
 /////////////////////////////////////////////
-sysmsg "UO Outlands Recall Miner" 88
-sysmsg "Version 2.2" 88
+sysmsg "UO Outlands Lumber" 88
 @removelist 'Runes'
 createlist 'Runes'
 @clearjournal
