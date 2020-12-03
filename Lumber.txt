@@ -340,7 +340,7 @@ while not dead
         createtimer 'restock'
         while counttype scriptregs[] 'any' 'backpack' < 15
           sysmsg "restocking reagent" 55
-          movetype scriptregs[] 'box' 'backpack' 0 0 0 'any' 15
+          movetype scriptregs[] 'box' 'backpack' 0 0 0 'any' 25
           pause 1500
           if timer 'restock' > 30000
             sysmsg "I cannot restock regs!" 55
@@ -365,18 +365,22 @@ while not dead
         endif
       endwhile
       //
-      // Dump ore 0x19b9 // Logs 0x1bdd
+      // Logs 0x1bdd
+	  // Boards 0x1bd7
       //
       while @findtype 0x1bdd 'any' 'backpack'
-        sysmsg "Dumping ore" 55
-        movetype 0x1bdd 'backpack' 'box' 0 0 0 'any'
+		sysmsg "Creating boards from logs" 55
+		useobject 'found'
+		pause 1000
+        sysmsg "Dumping boards" 0x55
+        movetype 0x1bd7 'backpack' 'box' 0 0 0 'any'
         pause 1000
       endwhile
       //
       // Dump seeds
       //
       while @findtype 0x5736 'any' 'backpack'
-        sysmsg "Dumping ore" 55
+        sysmsg "Dumping seeds" 55
         movetype 0x5736 'backpack' 'box' 0 0 0 'any'
         pause 1000
       endwhile
@@ -519,11 +523,17 @@ while not dead
           //
           // Weight
           //
-          if diffweight < 30
+          if diffweight < 300
             @clearlist 'moves'
             break
             continue
           endif
+		  // check when have more then 1200 wood
+		  if @findtype 0x1bdd 'any' 'backpack' 1200
+			@clearlist 'moves'
+			break
+			continue
+		  endif
           //
           // Remind
           //
