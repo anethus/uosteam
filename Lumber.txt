@@ -1,133 +1,9 @@
 /////////////////////////////////////////////
-// UO Steam Recall Miner
-// for Outlands
-// by Jewele
-//
-// Recall miner which recalls you to each location in a runebook,
-// and walks SouthEast about 30 spaces, mining at every 2 paces.
-//
-// What does this do for you:
-// --------------------------
-// * Recalls to 15 spots in each runebook you add
-// * At each location mines multiple spots
-// * Carries few regs and 1 pick at a time to
-//   minimize loss from PKs
-// * Audible alarms for miner damage, and captcha
-// * Works at bank or home
-// * Only recalls you back when overweight
-// * Recalls you away from PKs detected in Tracking
-// * Recalls you away from Blues who are near you
-// * Auto unloads when you are full
-// * Auto unloads seeds
-// * Heals you if you are damaged and plays alarm
-//
-// Character Build:
-// ----------------
-// 50+ Mining
-// 50+ Camping
-// 60 Magery
-// 100 Tracking
-//
-// Requirements:
-// -------------
-// One or more Blessed Runebooks (in pack)
-//
-// Runebook Preparation:
-// ---------------------
-// 1) Mark a spot either at your bank
-//    or home next to a container of your choice.
-// 2) Set the first rune in book as DEFAULT
-// 3) Fill rest of runebook with mining locations.
-// 4) Repeat for each runebook
-//
-// How to use?
-// -----------
-// 1) Decide what container you want to use -
-//    either a box/bag in your bank or a chest
-//    at your home. This will be known as <box>
-// 2) Put picks in <box>
-// 3) Put recall and heal regs in <box>
-// 4) If you have tracking: * Reds, * Closest, [X] House
-// 5) Run script
-//
-// Bank or home?
-// -------------
-// This was written for both, actually, so you might see
-// your character say "bank" even though you are running
-// it from home. If running from home, when prompted for
-// the banker, select the box.
-//
-// Mining Pattern
-// --------------
-// This script has you walking SouthEast, you can adjust
-// it to walk whatever pattern you want, as far as you want.
-//
-// Marking Locations
-// -----------------
-// Choose spots that allow you to North-West (straight up) about 30 paces.
-// Dont worry if you bump into walls, you will follow the wall and keep
-// going.
-//
-// Tracking Window
-// ---------------
-// After getting frustrated with PKs jumping me, despite tracking closest,
-// I decided to add active Tracking alongside passive hunting mode. You will
-// see the tracking window appear on your screen. What I found was - it actually
-// improves reliability of passive hunting! No explanation why - maybe
-// passive hunting processes the results from the active track?
-// No PKs have ever gotten even close to me after I added this /thumbsup.
-//
-// IMPORTANT : Mix and match your rune locations. Do not put 2 of same
-//             location next to each other. You don't want to detect PK
-//             and recall back 20 spaces away.
-//
-//
-// Known Issues
-// ------------
-// Sometimes spams screen with unable to pick up item? strange!
-//
-// This is 100% designed to collide into walls in mines, thats
-// part of its algorithm = dont worry about it.
-//
-// When marking a home container, use a chest sitting on ground.
-// DO NOT USE a box in a box! Must use main chest in game.
-//
-// Sounds
-// ------------
-// 1. You can get the buzzer.wav file at :
-//    https://github.com/gmccord333/UOOutlands/tree/master/Sounds
-// 2. Create a \Sounds directory in UOSteam directory
-// 3. Put file in there
-//
-// Versions
-// -----------
-// 1.0 First release! yay!
-// 1.1 Added proximity detect on reds
-// 1.2 Forgot heal regs, duh...
-// 1.3 Switched gump detection to 'any'
-// 1.4 Changed gump detection to include pk detection
-// 1.5 Drops load (if heavy) when spot is complete
-//     Mines until 25 stones left
-//     Drops off if less than 150 stones left
-// 1.6 Decreased wait time for target after using pick
-//     Increased walk speed
-// 1.7 Doubled walk north spaces - adjust to suit your needs!
-// 1.8 Reduced frequency of buzzer during gump captcha
-// 1.9 Added hiding when you are at house restocking
-// 2.0 Now handles multiple runebooks, please wait for prompt
-// 2.1 Will not prompt for Runebooks every time
-//     Removed sound file on proximity/pk detects
-// 2.2 Adds active tracking window (see notes above)
-//
-// UOSTEAM COPY-PASTE BELOW THIS LINE
-/////////////////////////////////////////////
 sysmsg "UO Outlands Recall Miner" 88
 sysmsg "Version 2.2" 88
 @removelist 'Runes'
 createlist 'Runes'
 @clearjournal
-@removetimer 'remind'
-@createtimer 'remind'
 @createtimer 'Track'
 @settimer 'Track' 5001
 @useobject 'backpack'
@@ -197,7 +73,7 @@ while not dead
   //
   // Server save
   //
-  if @injournal 'server' 'system'
+  if @injournal 'world' 'system'
     sysmsg "Pausing for server save" 55
     for 25
       // tracking alerts
@@ -275,28 +151,38 @@ while not dead
   // Check : regs, weight, picks
   //
   if not @inlist! 'actions' 'dumprestock'
+    sysmsg 'sprawdzam status' 0x11
     // script regs
     for 0 to 'scriptregs'
-      if @counttype scriptregs[] 'any' 'backpack' < 3
+      if @counttype scriptregs[] 'any' 'backpack' < 10
+	    sysmsg 'ziola' 0x11
         @clearlist 'actions'
         pushlist 'actions' 'dumprestock'
-        continue
+        break
       endif
     endfor
-    // picks 0xf44  //axe
+    // axe 0xf44
     if not @findlayer 'self' 2
       if @counttype 0xf44 'any' 'backpack' < 1
+		sysmsg 'brak siekier' 0x11
         @clearlist 'actions'
         pushlist 'actions' 'dumprestock'
-        continue
       endif
     endif
     // weight
-    if diffweight < 100
+    if diffweight < 300
+	  sysmsg 'waga' 0x11
       @clearlist 'actions'
       pushlist 'actions' 'dumprestock'
-      continue
     endif
+	 //
+	 // check when have more then 1200 logs
+	 //
+	 if @findtype 0x1bdd 'any' 'backpack' '1200'
+	   sysmsg 'za duzo dech' 0x11
+	   @clearlist 'actions'
+	   pushlist 'actions' 'dumprestock'
+	 endif
   endif
   //
   // Dump and/or Restock
@@ -338,7 +224,7 @@ while not dead
       for 0 to 'scriptregs'
         removetimer 'restock'
         createtimer 'restock'
-        while counttype scriptregs[] 'any' 'backpack' < 15
+        while counttype scriptregs[] 'any' 'backpack' < 10
           sysmsg "restocking reagent" 55
           movetype scriptregs[] 'box' 'backpack' 0 0 0 'any' 25
           pause 1500
@@ -385,6 +271,7 @@ while not dead
         pause 1000
       endwhile
     endif
+	
     //
     // Go mining
     //
@@ -472,6 +359,7 @@ while not dead
           // Mine
           //
           if not war self
+		    @canceltarget
             useobject 'lefthand'
             waitfortarget 2000
             target! 'self'
@@ -523,23 +411,10 @@ while not dead
           //
           // Weight
           //
-          if diffweight < 300
+          if diffweight < 3
             @clearlist 'moves'
             break
             continue
-          endif
-		  // check when have more then 1200 wood
-		  if @findtype 0x1bdd 'any' 'backpack' 1200
-			@clearlist 'moves'
-			break
-			continue
-		  endif
-          //
-          // Remind
-          //
-          if timer 'remind' > 60000
-            playsound 'drip.wav'
-            settimer 'remind' 0
           endif
         endwhile
         //
@@ -558,13 +433,6 @@ while not dead
       endif
     endwhile
     pause 1000
-  endif
-  //
-  // Remind
-  //
-  if timer 'remind' > 60000
-    playsound 'drip.wav'
-    settimer 'remind' 0
   endif
   //
   // Default action
