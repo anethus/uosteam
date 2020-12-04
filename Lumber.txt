@@ -70,37 +70,6 @@ pushlist 'scriptregs' 0xf85 // ginseng
 pushlist 'scriptregs' 0xf84 // garlic
 while not dead
   //
-  // Server save
-  //
-  if @injournal 'world' 'system'
-    sysmsg "Pausing for server save" 55
-    for 25
-      // tracking alerts
-      if @injournal "now tracking" 'system'
-        headmsg "ALARM! ALARM!" 22
-        @canceltarget
-        cast "Recall"
-        waitfortarget 5000
-        target! 'Runebooks[0]'
-        pause 2000
-        continue
-      endif
-      // proximity alerts
-      @getenemy 'murderer' 'enemy' 'next'
-      if @findobject 'enemy' and @inrange 'enemy' 12
-        headmsg "ALARM! ALARM!" 22
-        @canceltarget
-        cast "Recall"
-        waitfortarget 5000
-        target! 'Runebooks[0]'
-        pause 2000
-        continue
-      endif
-      pause 1000
-    endfor
-    @clearjournal
-  endif
-  //
   // Health check
   //
   while diffhits > 1
@@ -223,7 +192,7 @@ while not dead
       for 0 to 'scriptregs'
         removetimer 'restock'
         createtimer 'restock'
-        while counttype scriptregs[] 'any' 'backpack' < 10
+        while counttype scriptregs[] 'any' 'backpack' < 15
           sysmsg "restocking reagent" 55
           movetype scriptregs[] 'box' 'backpack' 0 0 0 'any' 25
           pause 1500
