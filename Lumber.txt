@@ -146,7 +146,7 @@ while not dead
 	 //
 	 // check when have more then 1200 logs
 	 //
-	 if @findtype 0x1bdd 'any' 'backpack' '1200'
+	 if @findtype 0x1bdd '0' 'backpack' '1200'
 	   sysmsg 'za duzo dech' 0x11
 	   @clearlist 'actions'
 	   pushlist 'actions' 'dumprestock'
