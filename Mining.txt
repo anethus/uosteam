@@ -469,6 +469,7 @@ while not dead
 			// Mine
 			//
 			if not war
+				@canceltarget
 				useobject 'righthand'
 				waitfortarget 2000
 				target! 'self'
