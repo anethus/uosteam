@@ -1,0 +1,115 @@
+@useobject 'backpack'
+pause 1000
+
+if not findalias 'bankbag'
+    msg "bank"
+    pause 1000
+    sysmsg "Select a bag with reagents in your bank" 88
+    promptalias 'bankbag'
+endif
+if not findalias 'banker'
+    sysmsg "Select the banker at your bank" 88
+    promptalias 'banker'
+endif
+
+//
+// Actions list
+//
+@removelist 'actions'
+@createlist 'actions'
+pushlist 'actions' 'restock'
+
+//
+// Train Regs (stocks 200)
+// 
+@removelist 'trainregs'
+@createlist 'trainregs'
+pushlist 'trainregs' 0xf7b // moss
+pushlist 'trainregs' 0xf86 // root
+pushlist 'trainregs' 0xf8d // silk
+
+while not dead
+
+    // 
+    // Magery 100 check
+    //
+    if skill 'magery' == 100
+        headmsg "Im done! woohoo!"
+        stop
+    endif
+
+    // 
+    // Reg check
+    // 
+    if not @inlist! 'actions' 'restock'
+        // train regs
+        sysmsg 'Sprawdzam ziola' 0x33
+        for 0 to 'trainregs'
+            if @counttype trainregs[] 'any' 'backpack' < 10
+                @clearlist 'actions'
+                sysmsg "I need to restock trainregs" 44
+                pushlist 'actions' 'restock'
+                continue
+            endif
+        endfor
+    endif
+
+    //
+    // Restock regs
+    //
+    if @inlist! 'actions' 'restock'
+        sysmsg "Checking / restocking regs" 88
+        pause 200
+        @clearlist 'actions'
+
+        for 0 to 'trainregs'
+            removetimer 'restock'
+            createtimer 'restock'
+            while counttype trainregs[] 'any' 'backpack' < 200
+                sysmsg "restocking reagent" 88
+                movetype trainregs[] 'bankbag' 'backpack' 0 0 0 'any' 200
+                pause 1500
+                if timer 'restock' > 30000
+                    sysmsg "I cannot restock the train regs" 44
+                    stop
+                endif
+            endwhile
+        endfor
+        pushlist 'actions' 'train'
+        continue
+    endif
+
+
+    // 
+    // Train
+    // 
+    if @inlist! 'actions' 'train'
+        pause 200
+        @clearlist 'actions'
+        //
+        // INSERT TRAINING SEQUENCE HERE
+        //
+        // START > 
+        if mana < 50
+            useskill 'meditation'
+            while mana < maxmana
+                pause 1000
+            endwhile
+        endif
+        if mana > 50
+            cast "Summon Earth Elemental"
+            pause 6000
+            msg 'an earth elemental release'
+            pause 1000
+        endif
+        pushlist 'actions' 'train'
+    endif
+
+    pause 200
+
+    //
+    // Server save fix
+    // 
+    pushlist 'actions' 'train'
+
+endwhile
