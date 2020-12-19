@@ -61,7 +61,8 @@
 //
 //////////////////////////////////////
 for 0 to 1000
-  @pushlist! 'cnt' 0x0
+  pushlist 'cnt' 0x0
+  pause 1
 endfor
 
 // <-----------
@@ -86,7 +87,7 @@ endif
 //
 @unsetalias 'box'
 if not findalias 'box'
-  sysmsg "Select a box with leather, picks and where ore will be placed" 88
+  sysmsg "Select a box with leather" 88
   promptalias 'box'
 endif
 
@@ -127,13 +128,14 @@ if diffweight < 10
   pause 5000
   stop
 endif
+
 while list 'make' > 0
   //
   // Check leather and take
   //
   if counttype 0x1081 'any' 'backpack' < 15
     headmsg 'Taking leather form box!' 66
-    movetype 0x1081 'box' 'backpack' 0 0 0 '2000'
+    movetype 0x1081 'box' 'backpack' 0 0 0 'any' '2000'
     pause 1000
   endif
   //
