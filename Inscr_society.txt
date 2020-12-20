@@ -9,6 +9,9 @@
 @createlist 'scrolls'
 @removelist 'cnt'
 @createlist 'cnt'
+// 4 Lvl (Utility only)
+//pushlist 'scrolls' 'Recall'
+
 // 5 lvl
 pushlist 'scrolls' 'Blade Spirits'
 //pushlist 'scrolls' 'Dispel Field'
@@ -138,6 +141,10 @@ while not dead
     replygump  0x38920abd 108
     waitforgump 0x38920abd 5000
     replygump  0x38920abd 207
+  elseif @inlist 'scrolls' 'Recall'
+	replygump  0x38920abd 106
+	waitforgump 0x38920abd 5000
+	replygump  0x38920abd 207
   else
     headmsg "Unable to figure out scrolls you requested" 91
     pause 5000
