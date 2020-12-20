@@ -9,11 +9,13 @@
 @createlist 'scrolls'
 @removelist 'cnt'
 @createlist 'cnt'
-// 4 Lvl (Utility only)
+// Utility Items
+pushlist 'scrolls' 'RepairKit'
+// 4 Lvl
 //pushlist 'scrolls' 'Recall'
 
 // 5 lvl
-pushlist 'scrolls' 'Blade Spirits'
+//pushlist 'scrolls' 'Blade Spirits'
 //pushlist 'scrolls' 'Dispel Field'
 //pushlist 'scrolls' 'Incognito'
 //pushlist 'scrolls' 'Magic Reflection'
@@ -61,7 +63,7 @@ if not listexists 'mats'
   @createlist 'mats'
 endif
 if list 'mats' == 0
-  @pushlist 'mats' 0xef3 // bancScroll
+  @pushlist 'mats' 0xef3 // blancScroll
 endif
 while not dead
   //
@@ -145,6 +147,12 @@ while not dead
 	replygump  0x38920abd 106
 	waitforgump 0x38920abd 5000
 	replygump  0x38920abd 207
+  elseif @inlist 'scrolls' 'RepairKit'
+    replygump 0x38920abd 9
+	waitforgump 0x38920abd 5000
+    replygump 0x38920abd 101
+	waitforgump 0x38920abd 5000
+	replygump 0x38920abd 200
   else
     headmsg "Unable to figure out scrolls you requested" 91
     pause 5000
