@@ -1,0 +1,65 @@
+@unsetalias 'sourceBox'
+@unsetalias 'targetBox'
+
+if not findalias 'sourceBox'
+  sysmsg "Select a box with regs and sew kits" 88
+  promptalias 'sourceBox'
+endif
+
+if not findalias 'targetBox'
+  sysmsg "Select target box" 88
+  promptalias 'targetBox'
+endif
+
+if not @findtype 0xf9d 'any' 'backpack'
+  if @findtype 0xf9d 'any' 'sourceBox'
+	sysmsg "Grabing sew tools" 88
+    for 5
+      @movetype 0xf9d 'sourceBox' 'backpack' 0 0 0 'any'
+      pause 1200
+    endfor
+  else
+    sysmsg 'Not enough tools in Stock Pile or Backpack.'
+    stop
+  endif
+endif
+
+if counttype 0x1081 'any' 'backpack' < 20
+  sysmsg "Grabing leather" 88
+  @movetype 0x1081 'sourceBox' 'backpack' 0 0 0 'any' 300
+  pause 1200
+endif
+
+while @findtype 0xf9d 'any' 'backpack' 1 1
+@setalias 'tool' 'found'
+useobject 'tool'
+
+waitforgump 0x38920abd 15000
+replygump 0x38920abd 108
+waitforgump 0x38920abd 15000
+replygump 0x38920abd 206
+waitforgump 0x38920abd 15000
+waitforgump 0x38920abd 15000
+// Grab leather
+if counttype 0x1081 'any' 'backpack' < 20
+  sysmsg "Out ou leather, grabing" 88
+  @movetype 0x1081 'sourceBox' 'backpack' 0 0 0 'any' 300
+  pause 1200
+endif
+// Move blank scrolls
+if counttype 0xef3 'any' 'backpack' > 200
+  sysmsg "To many scrolls, moving to target box" 88
+  @movetype 0xef3 'backpack' 'targetBox' 0 0 0 'any'
+  pause 1200
+endif
+// Grab sew kits
+if counttype 0xf9d 'any' 'backpack' == 0
+  sysmsg "Out of sew kits, grabing from source box" 88
+  for 5
+    @movetype 0xf9d 'sourceBox' 'backpack' 1 1 1 'any'
+    pause 1200
+  endfor
+endif
+
+endwhile
+
