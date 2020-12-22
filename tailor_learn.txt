@@ -1,0 +1,513 @@
+// Script By   : Prev Coin Vendor
+// Last Updated: 12/28/2018
+// Script Name : Tailor Trainer
+//
+// Important   : The only thing you need to do is go into
+//               the crafting menu, and make sure that the
+//               Recycle mode is set to: Recycle All (of /Type)
+//
+//             : You just need Leather in your backpack or stockpile.
+//             : You just need tools in your backpack or stockpile.
+//             : Script will craft what you need to craft in terms
+//               of skill gains.
+//             : Script will auto change the crafted product as
+//               you skill gain.
+//             : Script will automatically Recycle for you.  So you
+//               don't lose any Leather.
+unsetalias 'tool'
+unsetalias 'stockpile'
+if not listexists 'doRecycle'
+  createlist 'doRecycle'
+endif
+if not listexists 'grabLeatherFromStockpile'
+  createlist 'grabLeatherFromStockpile'
+endif
+if not listexists 'grabToolFromStockpile'
+  createlist 'grabToolFromStockpile'
+endif
+if not listexists 'unpackCommodities'
+  createlist 'unpackCommodities'
+endif
+clearlist 'doRecycle'
+clearlist 'grabWoodFromStockpile'
+clearlist 'grabToolFromStockpile'
+clearlist 'unpackCommodities'
+//Uncomment the line below if you want the script
+//to auto unpack wood commodities as it needs them.
+//pushlist 'unpackCommodities' 1
+headmsg 'Select the chest that has the rest of your wood.' 5
+promptalias 'stockpile'
+pushlist 'doRecycle' 1
+// If we don't have any tools in the backpack, lets check the stockpile.
+if not @findtype 0xf9d 'any' 'backpack'
+  if @findtype 0xf9d 'any' 'stockpile'
+    for 5
+      @movetype 0xf9d 'stockpile' 'backpack' 0 0 0 'any'
+      pause 1200
+    endfor
+  else
+    headmsg 'Script: Not enough tools in Stock Pile or Backpack.'
+    stop
+  endif
+endif
+if list 'doRecycle' > 0
+  clearlist 'doRecycle'
+  if @findtype 0xf9d 'any' 'backpack'
+    // Grab the carpentry tool.
+    setalias 'tool' 'found'
+    if skill 'Tailoring'  < 65
+      if @findtype 0x13c7 'any' 'backpack'
+        // If we have any leather gorgets
+        useobject 'tool'
+        waitforgump 0x38920abd 15000
+        replygump 0x38920abd 3
+        waitforgump 0x38920abd 15000
+        waitfortarget 15000
+        target! 'found'
+        waitforgump 0x38920abd 15000
+        if counttype 0x1081 'any' 'backpack' < 20
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      else
+        pushlist 'grabLeatherFromStockpile' 1
+      endif
+    elseif skill 'Tailoring' < 70
+      if @findtype 0x13ce 'any' 'backpack'
+        // If we have any leather gloves
+        useobject 'tool'
+        waitforgump 0x38920abd 15000
+        replygump 0x38920abd 3
+        waitforgump 0x38920abd 15000
+        waitfortarget 15000
+        target! 'found'
+        waitforgump 0x38920abd 15000
+        if counttype 0x1081 'any' 'backpack' < 20
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      else
+        pushlist 'grabLeatherFromStockpile' 1
+      endif
+    elseif skill 'Tailoring' < 75
+      if @findtype 0x1dba 'any' 'backpack'
+        // If we have any leather caps
+        useobject 'tool'
+        waitforgump 0x38920abd 15000
+        replygump 0x38920abd 3
+        waitforgump 0x38920abd 15000
+        waitfortarget 15000
+        target! 'found'
+        waitforgump 0x38920abd 15000
+        if counttype 0x1081 'any' 'backpack' < 20
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      else
+        pushlist 'grabLeatherFromStockpile' 1
+      endif
+    elseif skill 'Tailoring' < 85
+      if @findtype 0x13d6 'any' 'backpack'
+        // If we have any studded gorgets
+        useobject 'tool'
+        waitforgump 0x38920abd 15000
+        replygump 0x38920abd 3
+        waitforgump 0x38920abd 15000
+        waitfortarget 15000
+        target! 'found'
+        waitforgump 0x38920abd 15000
+        if counttype 0x1081 'any' 'backpack' < 20
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      else
+        pushlist 'grabLeatherFromStockpile' 1
+      endif
+    elseif skill 'Tailoring' < 90
+      if @findtype 0x13dd 'any' 'backpack'
+        // If we have any studded gloves
+        useobject 'tool'
+        waitforgump 0x38920abd 15000
+        replygump 0x38920abd 3
+        waitforgump 0x38920abd 15000
+        waitfortarget 15000
+        target! 'found'
+        waitforgump 0x38920abd 15000
+        if counttype 0x1081 'any' 'backpack' < 20
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      else
+        pushlist 'grabLeatherFromStockpile' 1
+      endif
+    elseif skill 'Tailoring' < 95
+      if @findtype 0x1dba 'any' 'backpack'
+        // If we have any studded caps
+        useobject 'tool'
+        waitforgump 0x38920abd 15000
+        replygump 0x38920abd 3
+        waitforgump 0x38920abd 15000
+        waitfortarget 15000
+        target! 'found'
+        waitforgump 0x38920abd 15000
+        if counttype 0x1081 'any' 'backpack' < 20
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      else
+        pushlist 'grabLeatherFromStockpile' 1
+      endif
+    elseif skill 'Tailoring' < 100
+      if @findtype 0x13d4 'any' 'backpack'
+        // If we have any studded arms.
+        useobject 'tool'
+        waitforgump 0x38920abd 15000
+        replygump 0x38920abd 3
+        waitforgump 0x38920abd 15000
+        waitfortarget 15000
+        target! 'found'
+        waitforgump 0x38920abd 15000
+        if counttype 0x1081 'any' 'backpack' < 20
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      else
+        pushlist 'grabLeatherFromStockpile' 1
+      endif
+	elseif skill 'Tailoring' < 120
+      if @findtype 0x1eba 'any' 'backpack'
+        useobject 'tool'
+        waitforgump 0x38920abd 15000
+        replygump 0x38920abd 3
+        waitforgump 0x38920abd 15000
+        waitfortarget 15000
+        target! 'found'
+        waitforgump 0x38920abd 15000
+        if counttype 0x1081 'any' 'backpack' < 20
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      else
+        pushlist 'grabLeatherFromStockpile' 1
+      endif
+    endif
+  else
+    headmsg 'Script Stopped: You need atleast 20 Leather, and you have no tools.'
+    stop
+  endif
+endif
+// We need to get Leather from the stockpile.
+if list 'grabLeatherFromStockpile' > 0
+  clearlist 'grabLeatherFromStockpile'
+  if @movetype 0x1081 'stockpile' 'backpack' 0 0 0 'any' 100
+    pause 1200
+  else
+    if list 'unpackCommodities' > 0
+      if @findtype 0x4b27 'any' 'stockpile' 1 1
+        moveitem 'found' 'backpack' 1 1 1
+        pause 1200
+        useobject 'found'
+        pause 1200
+        target 'stockpile'
+        if @movetype 0x1081 'stockpile' 'backpack' 1 1 1 'any' 100
+          pause 1200
+        else
+          headmsg 'Script: Not enough Leather in Stock Pile to continue.'
+          stop
+        endif
+      endif
+    else
+      headmsg 'Script: Not enough Leather in Stock Pile to continue.'
+      stop
+    endif
+  endif
+endif
+// Lets make sure we have enough tools.
+if counttype 0xf9d 'any' 'backpack' < 5
+  for 5
+    @movetype 0xf9d 'stockpile' 'backpack' 0 0 0 'any'
+    pause 1200
+  endfor
+endif
+clearlist 'grabLeatherFromStockpile'
+clearlist 'grabToolFromStockpile'
+while @findtype 0xf9d 'any' 'backpack' 1 1
+  // While we have a sewing kit in backpack.
+  setalias 'tool' 'found'
+  useobject 'tool'
+  if skill 'Tailoring'  < 65
+    // Build a leather gorget
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 101
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 200
+    waitforgump 0x38920abd 15000
+    waitforgump 0x38920abd 15000
+  elseif skill 'Tailoring'  < 70
+    // Build a leather gloves
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 101
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 201
+    waitforgump 0x38920abd 15000
+    waitforgump 0x38920abd 15000
+  elseif skill 'Tailoring'  < 75
+    // Build a leather caps
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 101
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 202
+    waitforgump 0x38920abd 15000
+    waitforgump 0x38920abd 15000
+  elseif skill 'Tailoring'  < 85
+    // Build a studded gorgets
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 102
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 200
+    waitforgump 0x38920abd 15000
+    waitforgump 0x38920abd 15000
+  elseif skill 'Tailoring'  < 90
+    // Build a studded gloves
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 102
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 201
+    waitforgump 0x38920abd 15000
+    waitforgump 0x38920abd 15000
+  elseif skill 'Tailoring'  < 95
+    // Build a studded caps
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 102
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 202
+    waitforgump 0x38920abd 15000
+    waitforgump 0x38920abd 15000
+  elseif skill 'Tailoring'  < 100
+    // Build a tailoring repair kit
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 102
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 203
+    waitforgump 0x38920abd 15000
+    waitforgump 0x38920abd 15000
+  elseif skill 'Tailoring'  < 120
+    // Build a tailoring repair kit
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 108
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 203
+    waitforgump 0x38920abd 15000
+    waitforgump 0x38920abd 15000
+  else
+    headmsg 'IM LEGENDARY TAILOR'
+    stop
+  endif
+  while @findobject 'tool'
+    // While the sewing kit we found still exists...
+    if counttype 0x1081 'any' 'backpack' < 20
+      pushlist 'doRecycle' 1
+    elseif contents 'backpack' >= 125
+      pushlist 'doRecycle' 1
+    elseif weight >= 390
+      pushlist 'doRecycle' 1
+	elseif counttype 0x13c7 'any' 'backpack' > 20
+	  pushlist 'doRecycle' 1
+	elseif counttype 0x13ce 'any' 'backpack' > 20
+	  pushlist 'doRecycle' 1
+	elseif counttype 0x1dba 'any' 'backpack' > 20
+	  pushlist 'doRecycle' 1
+	elseif counttype 0x13d6 'any' 'backpack' > 20
+	  pushlist 'doRecycle' 1
+	elseif counttype 0x13dd 'any' 'backpack' > 20
+	  pushlist 'doRecycle' 1
+	elseif counttype 0x1dba 'any' 'backpack' > 20
+	  pushlist 'doRecycle' 1
+	elseif counttype 0x13d4 'any' 'backpack' > 20
+	  pushlist 'doRecycle' 1  
+	elseif counttype 0x13e1 'any' 'backpack' > 20
+	  pushlist 'doRecycle' 1  
+    endif
+    if list 'doRecycle' > 0
+      headmsg 'Recycling.'
+      clearlist 'doRecycle'
+      if skill 'Tailoring' < 65
+        if @findtype 0x13c7 'any' 'backpack'
+          // We have leather gorgets that we can recycle.
+          replygump 0x38920abd 3
+          waitforgump 0x38920abd 15000
+          waitfortarget 15000
+          target! 'found'
+          waitforgump 0x38920abd 15000
+          if counttype 0x1081 'any' 'backpack' < 20
+            pushlist 'grabLeatherFromStockpile' 1
+          endif
+        else
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      elseif skill 'Tailoring' < 70
+        if @findtype 0x13ce 'any' 'backpack'
+          // We have leather gloves we can recycle.
+          replygump 0x38920abd 3
+          waitforgump 0x38920abd 15000
+          waitfortarget 15000
+          target! 'found'
+          waitforgump 0x38920abd 15000
+          if counttype 0x1081 'any' 'backpack' < 20
+            pushlist 'grabLeatherFromStockpile' 1
+          endif
+        else
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      elseif skill 'Tailoring' < 75
+        if @findtype 0x1dba 'any' 'backpack'
+          // We have leather caps we can recycle.
+          replygump 0x38920abd 3
+          waitforgump 0x38920abd 15000
+          waitfortarget 15000
+          target! 'found'
+          waitforgump 0x38920abd 15000
+          if counttype 0x1081 'any' 'backpack' < 20
+            pushlist 'grabLeatherFromStockpile' 1
+          endif
+        else
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      elseif skill 'Tailoring' < 85
+        if @findtype 0x13d6 'any' 'backpack'
+          // We have studded gorgets we can recycle.
+          replygump 0x38920abd 3
+          waitforgump 0x38920abd 15000
+          waitfortarget 15000
+          target! 'found'
+          waitforgump 0x38920abd 15000
+          if counttype 0x1081 'any' 'backpack' < 20
+            pushlist 'grabLeatherFromStockpile' 1
+          endif
+        else
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      elseif skill 'Tailoring' < 90
+        if @findtype 0x13dd 'any' 'backpack'
+          // We have studded gloves we can recycle.
+          replygump 0x38920abd 3
+          waitforgump 0x38920abd 15000
+          waitfortarget 15000
+          target! 'found'
+          waitforgump 0x38920abd 15000
+          if counttype 0x1081 'any' 'backpack' < 20
+            pushlist 'grabLeatherFromStockpile' 1
+          endif
+        else
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      elseif skill 'Tailoring' < 95
+        if @findtype 0x1dba 'any' 'backpack'
+          // We have studded caps we can recycle.
+          replygump 0x38920abd 3
+          waitforgump 0x38920abd 15000
+          waitfortarget 15000
+          target! 'found'
+          waitforgump 0x38920abd 15000
+          if counttype 0x1081 'any' 'backpack' < 20
+            pushlist 'grabLeatherFromStockpile' 1
+          endif
+        else
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      elseif skill 'Tailoring' < 100
+        if @findtype 0x13d4 'any' 'backpack'
+          // We have repair kits we can recycle.
+          replygump 0x38920abd 3
+          waitforgump 0x38920abd 15000
+          waitfortarget 15000
+          target! 'found'
+          waitforgump 0x38920abd 15000
+          if counttype 0x1081 'any' 'backpack' < 20
+            pushlist 'grabLeatherFromStockpile' 1
+          endif
+        else
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+	  elseif skill 'Tailoring' < 120
+        if @findtype 0x1eba 'any' 'backpack'
+          // We have repair kits we can recycle.
+          replygump 0x38920abd 3
+          waitforgump 0x38920abd 15000
+          waitfortarget 15000
+          target! 'found'
+          waitforgump 0x38920abd 15000
+          if counttype 0x1081 'any' 'backpack' < 20
+            pushlist 'grabLeatherFromStockpile' 1
+          endif
+        else
+          pushlist 'grabLeatherFromStockpile' 1
+        endif
+      else
+        stop
+      endif
+      if list 'grabLeatherFromStockpile' > 0
+        clearlist 'grabLeatherFromStockpile'
+        headmsg 'Grabbing Leather from Stock Pile.'
+        if @movetype 0x1081 'stockpile' 'backpack' 1 1 1 'any' 500
+          pause 1200
+        else
+          if list 'unpackCommodities' > 0
+            if @findtype 0x4b27 'any' 'stockpile' 1 1
+              moveitem 'found' 'backpack' 1 1 1
+              pause 1200
+              useobject 'found'
+              pause 1200
+              target 'stockpile'
+              if @movetype 0x1081 'stockpile' 'backpack' 0 0 0 'any' 500
+                pause 1200
+              else
+                headmsg 'Script: Not enough Leather in Stock Pile to continue. (1)'
+                stop
+              endif
+            endif
+          else
+            headmsg 'Script: Not enough Leather in Stock Pile to continue. (2)'
+            stop
+          endif
+        endif
+      endif
+    endif
+    if skill 'Tailoring' < 65
+      // Build a club
+      replygump 0x38920abd 200
+      waitforgump 0x38920abd 15000
+      waitforgump 0x38920abd 15000
+    elseif skill 'Tailoring' < 70
+      replygump 0x38920abd 201
+      waitforgump 0x38920abd 15000
+      waitforgump 0x38920abd 15000
+    elseif skill 'Tailoring' < 75
+      replygump 0x38920abd 202
+      waitforgump 0x38920abd 15000
+      waitforgump 0x38920abd 15000
+    elseif skill 'Tailoring' < 85
+      replygump 0x38920abd 200
+      waitforgump 0x38920abd 15000
+      waitforgump 0x38920abd 15000
+    elseif skill 'Tailoring' < 90
+      replygump 0x38920abd 201
+      waitforgump 0x38920abd 15000
+      waitforgump 0x38920abd 15000
+    elseif skill 'Tailoring' < 95
+      replygump 0x38920abd 202
+      waitforgump 0x38920abd 15000
+      waitforgump 0x38920abd 15000
+    elseif skill 'Tailoring' < 100
+      replygump 0x38920abd 203
+      waitforgump 0x38920abd 15000
+      waitforgump 0x38920abd 15000
+    elseif skill 'Tailoring' < 120
+      replygump 0x38920abd 203
+      waitforgump 0x38920abd 15000
+      waitforgump 0x38920abd 15000
+    endif
+  endwhile
+  // If we don't have any tools in the backpack, lets move some over.
+  if counttype 0xf9d 'any' 'backpack' == 0
+    for 5
+      @movetype 0xf9d 'stockpile' 'backpack' 1 1 1 'any'
+      pause 1200
+    endfor
+  endif
+  replygump 0x38920abd 0
+endwhile
+headmsg 'Script Stopped: You have no more sewing kits.'
+unsetalias 'tool'
