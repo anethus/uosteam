@@ -1,16 +1,28 @@
 ///////////////////////////////////////
-//
-//1. Uncomment potion that you want to create
-//2. Set count of potion to create (go to line 41)
-//3. Enjoy
-//
+// Nie chce mi sie meczyc po angielsku:
+// Skrypt do societow z INSKRYPCJI
+// 1. Przygotuj pojemnik z Blank Scrollsami
+// 2. Wybierz z listy ponizej co ma byc robione
+//    - rzecz ktora ma byc zrobiona musi byc odkomentowana
+//    - To znaczy nie ma miec '//' przed soba
+//    - Mozna wybrac tylko jedna rzecz
+// 3. Skrypt posiada DWA liczniki
+//    - MOZE BYC TYLKO JEDNE LICZNIK
+//    - WYBOR LICZNIKA OPISANY NA DOLE - PROSZE UWAZNIE PRZECZYTAC
+//    - Wpisz do 'cnt' liczbe rzeczy do zrobienia (OGOLNIE, NORMALNE I EXPY)
+//    - Wpisz do 'expCnt' liczbe rzeczy do zrobienia (JESLI SOCIET WYMAGA TYLKO EXP)
+// 4. Ustaw ogpowiednio Gump do recyclowania (Recycle All (of Type) lub Recycle Regular (of Type))
 ///////////////////////////////////////
 @removelist 'scrolls'
 @createlist 'scrolls'
+@removelist 'expCnt'
 @removelist 'cnt'
-@createlist 'cnt'
+
+// Books and Tomes
+pushlist 'scrolls' 'Spellbook'
+
 // Utility Items
-pushlist 'scrolls' 'RepairKit'
+//pushlist 'scrolls' 'RepairKit'
 // 4 Lvl
 //pushlist 'scrolls' 'Recall'
 
@@ -32,22 +44,52 @@ pushlist 'scrolls' 'RepairKit'
 //pushlist 'scrolls' 'Mass Curse'
 //pushlist 'scrolls' 'Paralyze Field'
 //pushlist 'scrolls' 'Reveal'
+
 ///////////////////////////////////////////////////////
-// Set how meny of scrolls you want to create
+// LICZNIK NORMALNYCH RZECZY
+// Wpisz ponizej ile NORMALNYCH I EXPOWYCH rzeczy ma byc zrobione
+// Jesli Societ Job wymaga tylko EXP zakomentuj kod ponizej (do nastepnej istrukcji)
+//
 // Set number aftet `to`
 // For example:
 //    for 0 to 100
 // will create 100 scrolls
+// Licznik na kazdy rodzaj przedmiotu (NORMAL i EXP)
 ///////////////////////////////////////////////////////
+
+//@createlist 'cnt'
+//for 0 to 3
+//  pushlist 'cnt' 0x0
+//  pause 10
+//endfor
+
+///////////////////////////////////////////////////////
+// LICZNIK EXPOW
+// Wpisz ponizej ile NORMALNYCH I EXPOWYCH rzeczy ma byc zrobione
+// Jesli societ nie wymaga EXPOW zakomentuj kod ponizej (do nastepnej sekcji)
+//
+// Set number aftet `to`
+// For example:
+//    for 0 to 100
+// will create 100 exp spellbooks
+// Licznik na expowe przedmioty (tylko EXP)
+///////////////////////////////////////////////////////
+
+@createlist 'expCnt'
 for 0 to 3
-  pushlist 'cnt' 0x0
+  pushlist 'expCnt' 0x0
   pause 10
 endfor
+
+///////////////////////////////////////////////////////
+// KONIEC WYBORU
+///////////////////////////////////////////////////////
+
 //
 //Check for number of scrolls
 //
 if list 'scrolls' > 1
-  sysmsg 'Ej.... za duzo wybrales scolli' 0x55
+  sysmsg 'Ej.... za duzo wybrales rzeczy do zrobienia' 0x55
   stop
 endif
 if not @findobject 'mats'
@@ -65,14 +107,30 @@ endif
 if list 'mats' == 0
   @pushlist 'mats' 0xef3 // blancScroll
 endif
+if listexists 'cnt'
+  if listexists 'expCnt'
+    sysmsg "Wybrales robienie expow oraz normalnych. Prosze zdefiniowac poprzez zakomentowanie"
+	stop
+  endif
+endif
+
 while not dead
   //
   // Check for full makes
   //
-  if list 'cnt' <= 0
-    sysmsg "My work is done, i have to go....." 91
-    stop
+  if listexists 'cnt'
+    if list 'cnt' <= 0
+      sysmsg "My work is done, i have to go....." 91
+      stop
+    endif
   endif
+  if listexists 'expCnt'
+    if list 'expCnt' <= 0
+      sysmsg "My work is done, i have to go....." 91
+      stop
+    endif
+  endif
+
   // use Pens
   sysmsg "Creating scroll" 91
   @findtype 0xfc0 'any' 'backpack'
@@ -153,6 +211,10 @@ while not dead
     replygump 0x38920abd 101
 	waitforgump 0x38920abd 5000
 	replygump 0x38920abd 200
+  elseif @inlist 'scrolls' 'Spellbook'
+    replygump 0x38920abd 100
+	waitforgump 0x38920abd 5000
+	replygump 0x38920abd 200
   else
     headmsg "Unable to figure out scrolls you requested" 91
     pause 5000
@@ -162,11 +224,16 @@ while not dead
   @createtimer 'craft'
   while timer 'craft' < 5000
     if @ingump '0x38920abd' 'You pour'
-      poplist 'cnt' 'front'
+      @poplist 'cnt' 'front'
       break
     endif
-    if @ingump '0x38920abd' 'You create'
-      poplist 'cnt' 'front'
+    if @ingump '0x38920abd' 'You create the item'
+      @poplist 'cnt' 'front'
+      break
+    endif
+	if @ingump '0x38920abd' 'You create an exceptional'
+      @poplist 'cnt' 'front'
+	  @poplist 'expCnt' 'front'
       break
     endif
     if @ingump '0x38920abd' 'You fail'
@@ -187,6 +254,18 @@ while not dead
     movetype 0xef3 'mats' 'backpack' 1 0 0 0 100
     pause 1000
   endif
+  if diffweight < 100
+    if @findtype 0xefa '0' 'backpack' 'any'
+      if @inlist 'scrolls' 'Spellbook'
+        replygump 0x38920abd 3
+        waitforgump 0x38920abd 5000
+        pause 10
+        target 'found'
+        pause 10
+	  endif
+    endif
+  endif
+
   //
   // World save check
   //
