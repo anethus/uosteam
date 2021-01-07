@@ -1,0 +1,239 @@
+////////////////////////////////////////////
+//  UO Outlands shopper
+//  1. Stworz w Agentach Liste zakupow i jak aktywuj
+//  2. Swtorz w Agentach Organizera z Nazwa 'ZakupyOnline'
+//     - Dodaj do listy rzeczy kupowane
+//     - Zmien nazwe listy na 'ZakupyOnline' (2x klik na nazwe)
+//     - Ustaw kontenery na organizera (Set containers w UOSteam)
+//  3. Uruchom skrypt
+//  4. Postepuj zgodnie z wiadomosciami na ekranie
+//     - Pokaz pojemnik na restock oraz dumpowanie rzeczy
+//     - Pokaz book z defaulowo zaznaczona runka do skrzyni
+//     - Pokaz liste runebookow (moze byc wiele runebookow)
+//
+////////////////////////////////////////////
+
+@removelist 'Runes'
+@createlist 'Runes'
+@removelist 'Runebooks'
+@removelist 'backupRunebooks'
+@createlist 'backupRunebooks'
+@clearjournal
+@useobject 'backpack'
+@unsetalias 'box'
+@unsetalias 'homebook'
+pause 1000
+
+//
+// Set box
+//
+if not findalias 'box'
+  sysmsg "Wskaz pudelko na zabawki oraz na ziola do restocku" 88
+  promptalias 'box'
+endif
+@cleartargetqueue
+// HOMEBOOK!!
+if not @findalias 'homebook'
+  sysmsg "Select runebook with HOME destination"
+  promptalias 'homebook'
+endif
+//
+// Prompt runebooks
+//
+if not listexists 'Runebooks'
+  @createlist 'Runebooks'
+  @pushlist 'Runebooks' '0x0'
+  sysmsg "Poklikaj sobie po runebooki z vendorlista" 88
+  sysmsg "Jak skonczysz to nacisnij ESC" 88
+  for 99
+    sysmsg "Zaznacz RUNEBOOKA z vendorami" 88
+    promptalias 'book'
+    if @findobject 'book'
+      @pushlist! 'Runebooks' 'book'
+      sysmsg "Dodano ksiege" 44
+    else
+      break
+    endif
+  endfor
+  sysmsg "Zamykam liste" 44
+endif
+
+//
+// Actions list
+//
+@removelist 'actions'
+@createlist 'actions'
+pushlist 'actions' 'dumprestock'
+//
+// Script Regs
+//
+@removelist 'scriptregs'
+@createlist 'scriptregs'
+pushlist 'scriptregs' 0xf7a // pearl
+pushlist 'scriptregs' 0xf7b // moss
+pushlist 'scriptregs' 0xf86 // root
+
+while not dead
+  //
+  // Rune list check
+  //
+  if list 'Runes' == 0
+    sysmsg 'Nowa lista zakupow' 0x11
+
+    @setalias 'book' 'Runebooks[0]'
+    @poplist! 'Runebooks' 'front'
+    @pushlist! 'backupRunebooks' 'book'
+
+    //
+    // Set rune locations
+    //
+    @pushlist 'Runes' 11
+    @pushlist 'Runes' 17
+    @pushlist 'Runes' 23
+    @pushlist 'Runes' 29
+    @pushlist 'Runes' 35
+    @pushlist 'Runes' 41
+    @pushlist 'Runes' 47
+    @pushlist 'Runes' 53
+    @pushlist 'Runes' 59
+    @pushlist 'Runes' 65
+    @pushlist 'Runes' 71
+    @pushlist 'Runes' 77
+    @pushlist 'Runes' 83
+    @pushlist 'Runes' 89
+    @pushlist 'Runes' 95
+	
+    if list 'Runebooks' == 0
+      sysmsg 'Koniec runebookow, odpoczywamy' 0x11
+	  
+	  // restore runebook list
+		for 0 to 'backupRunebooks'
+		  @setalias 'backupRune' 'backupRunebooks[0]'
+		  @poplist! 'backupRunebooks' 'back'
+		  @pushlist! 'Runebooks' 'backupRune'
+		endfor
+
+
+      @clearlist 'actions'
+      @pushlist 'actions' 'wait'
+    
+    else
+	  sysmsg 'Lecimy z kolejna ksiega' 0x11
+      @clearlist 'actions'
+      @pushlist 'actions' 'dumprestock'
+	endif
+
+
+  endif
+  //
+  // Check : regs, weight
+  //
+  if not @inlist! 'actions' 'dumprestock'
+    sysmsg 'sprawdzam status' 0x11
+    // script regs
+    for 0 to 'scriptregs'
+      if @counttype scriptregs[] 'any' 'backpack' < 8
+        sysmsg 'ziola' 0x11
+        @clearlist 'actions'
+        pushlist 'actions' 'dumprestock'
+        break
+      endif
+    endfor
+    // weight
+    if weight > 200
+      sysmsg 'waga' 0x11
+      @clearlist 'actions'
+      pushlist 'actions' 'dumprestock'
+    endif
+	// mana
+	if mana < 20
+	  sysmsg 'Malo many, pomedytuje' 0x11
+	  useskill 'meditation'
+      pause 5000
+	endif
+  endif
+  if @inlist! 'actions' 'wait'
+    @canceltarget
+    cast "Recall"
+    waitfortarget 5000
+    target! 'homebook'
+    pause 2500
+	// prewenzyjne wywalenie staffu do boxa
+    organizer 'ZakupyOnline'
+    pause 500
+    while organizing
+      pause 500
+    endwhile
+	useskill 'hiding'
+    sysmsg 'Poczekam chwile' 0x11
+    @clearlist 'actions'
+    pause 10000
+    sysmsg 'Ok, lece dalej' 0x11
+    pushlist 'actions' 'dumprestock'
+  endif
+  //
+  // Restock
+  //
+  if @inlist! 'actions' 'dumprestock'
+    sysmsg "Czas na restock u wydropienie itemkow" 88
+    pause 200
+    @clearlist 'actions'
+    if not @findobject 'box'
+      // mana to recall
+      while mana < 15
+        useskill 'meditation'
+        pause 6000
+      endwhile
+      // recall
+      @canceltarget
+      cast "Recall"
+      waitfortarget 5000
+      target! 'homebook'
+      pause 2500
+    endif
+	pause 1000
+	useobject 'box'
+    // Wrzucanie rzeczy do baga
+    organizer 'ZakupyOnline'
+    pause 500
+    while organizing
+      pause 500
+    endwhile
+    // Restok po szafie
+    for 0 to 'scriptregs'
+      removetimer 'restock'
+      createtimer 'restock'
+      while counttype scriptregs[] 'any' 'backpack' < 15
+        sysmsg "restocking reagent" 55
+        movetype scriptregs[] 'box' 'backpack' 0 0 0 'any' 25
+        pause 1500
+        if timer 'restock' > 30000
+          sysmsg "I cannot restock regs!" 55
+          stop
+        endif
+      endwhile
+    endfor
+    pushlist 'actions' 'buy'
+  endif
+  //
+  // Recall to next spot, buy
+  //
+  if @inlist 'actions' 'buy'
+    pause 500
+    useobject 'Runebooks[0]'
+    waitforgump 0x5c7db029 15000
+    replygump 0x5c7db029 Runes[0]
+    pause 2000
+    poplist! 'Runes' 'front'
+    //
+    // buy
+    //
+    pause 500
+    msg 'vendor buy'
+    pause 1000
+  endif
+  //
+  // Default action
+  //
+  pushlist 'actions' 'buy'
+endwhile
