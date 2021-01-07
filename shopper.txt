@@ -11,8 +11,15 @@
 //     - Pokaz book z defaulowo zaznaczona runka do skrzyni
 //     - Pokaz liste runebookow (moze byc wiele runebookow)
 //
+//  BLANK SCROLLS WARNING!!
+//  Problem jest taki, ze grafika czystych zwoi u vendora jest inna niz ta ktora jest w plecaku
+//  Nalezy samemy wyedytowac profil uosteam i zmienic grafike '0xef3' na '0x0E34' i odswiezyc profil
+//
+//  PROTipy
+//  - jak masz ksiege niepelna to dodawaj na koniec runke do domu
+//      wtedy bedzie safety recall
+//  - jak robisz zakupy na ziola to dodawaj zawsze do zakupow po 2-3 skladniki na recall
 ////////////////////////////////////////////
-
 @removelist 'Runes'
 @createlist 'Runes'
 @removelist 'Runebooks'
@@ -23,7 +30,6 @@
 @unsetalias 'box'
 @unsetalias 'homebook'
 pause 1000
-
 //
 // Set box
 //
@@ -57,7 +63,6 @@ if not listexists 'Runebooks'
   endfor
   sysmsg "Zamykam liste" 44
 endif
-
 //
 // Actions list
 //
@@ -72,18 +77,15 @@ pushlist 'actions' 'dumprestock'
 pushlist 'scriptregs' 0xf7a // pearl
 pushlist 'scriptregs' 0xf7b // moss
 pushlist 'scriptregs' 0xf86 // root
-
 while not dead
   //
   // Rune list check
   //
   if list 'Runes' == 0
     sysmsg 'Nowa lista zakupow' 0x11
-
     @setalias 'book' 'Runebooks[0]'
     @poplist! 'Runebooks' 'front'
     @pushlist! 'backupRunebooks' 'book'
-
     //
     // Set rune locations
     //
@@ -102,28 +104,21 @@ while not dead
     @pushlist 'Runes' 83
     @pushlist 'Runes' 89
     @pushlist 'Runes' 95
-	
     if list 'Runebooks' == 0
       sysmsg 'Koniec runebookow, odpoczywamy' 0x11
-	  
-	  // restore runebook list
-		for 0 to 'backupRunebooks'
-		  @setalias 'backupRune' 'backupRunebooks[0]'
-		  @poplist! 'backupRunebooks' 'back'
-		  @pushlist! 'Runebooks' 'backupRune'
-		endfor
-
-
+      // restore runebook list
+      for 0 to 'backupRunebooks'
+        @setalias 'backupRune' 'backupRunebooks[0]'
+        @poplist! 'backupRunebooks' 'back'
+        @pushlist! 'Runebooks' 'backupRune'
+      endfor
       @clearlist 'actions'
       @pushlist 'actions' 'wait'
-    
     else
-	  sysmsg 'Lecimy z kolejna ksiega' 0x11
+      sysmsg 'Lecimy z kolejna ksiega' 0x11
       @clearlist 'actions'
       @pushlist 'actions' 'dumprestock'
-	endif
-
-
+    endif
   endif
   //
   // Check : regs, weight
@@ -145,12 +140,15 @@ while not dead
       @clearlist 'actions'
       pushlist 'actions' 'dumprestock'
     endif
-	// mana
-	if mana < 20
-	  sysmsg 'Malo many, pomedytuje' 0x11
-	  useskill 'meditation'
-      pause 5000
-	endif
+    // mana
+    if mana < 20
+      sysmsg 'Malo many, pomedytuje' 0x11
+      useskill 'meditation'
+      while not mana == maxmana
+        pause 500
+      endwhile
+      sysmsg 'text'
+    endif
   endif
   if @inlist! 'actions' 'wait'
     @canceltarget
@@ -158,16 +156,16 @@ while not dead
     waitfortarget 5000
     target! 'homebook'
     pause 2500
-	// prewenzyjne wywalenie staffu do boxa
+    // prewenzyjne wywalenie staffu do boxa
     organizer 'ZakupyOnline'
     pause 500
     while organizing
       pause 500
     endwhile
-	useskill 'hiding'
+    useskill 'hiding'
     sysmsg 'Poczekam chwile' 0x11
     @clearlist 'actions'
-    pause 10000
+    pause 600000
     sysmsg 'Ok, lece dalej' 0x11
     pushlist 'actions' 'dumprestock'
   endif
@@ -191,8 +189,8 @@ while not dead
       target! 'homebook'
       pause 2500
     endif
-	pause 1000
-	useobject 'box'
+    pause 1000
+    useobject 'box'
     // Wrzucanie rzeczy do baga
     organizer 'ZakupyOnline'
     pause 500
@@ -237,3 +235,4 @@ while not dead
   //
   pushlist 'actions' 'buy'
 endwhile
+
