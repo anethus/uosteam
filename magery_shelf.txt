@@ -1,127 +1,123 @@
+/////////////////////////////////
+// UO Outlands Magery Taining
+// Use Shelf and Restock
+//
+// 1. Set Loyout in shelf to get bloodmose, nightshade, mandragoraroot, spidersilk
+// 2. Play macro
+// 3. Select shelf
+// 2. Enjoy
+//////////////////////////////////
+
 @useobject 'backpack'
 pause 1000
-
 if not findalias 'shelf'
-    sysmsg "Select a shelf" 88
-    promptalias 'shelf'
+  sysmsg "Select a shelf" 88
+  promptalias 'shelf'
 endif
-
 //
 // Actions list
 //
 @removelist 'actions'
 @createlist 'actions'
 pushlist 'actions' 'restock'
-
 //
 // Train Regs (stocks 200)
-// 
+//
 @removelist 'trainregs'
 @createlist 'trainregs'
 pushlist 'trainregs' 0xf7b // moss
 pushlist 'trainregs' 0xf86 // root
 pushlist 'trainregs' 0xf8d // silk
 pushlist 'trainregs' 0xf88 // nightshade
-
 while not dead
-
-    // 
-    // Magery 100 check
-    //
-	if @inlist! 'actions' 'checkSkill'
-	    @clearlist 'actions'
-		if skill 'magery' == 100
-			headmsg "Im done! woohoo!"
-			stop
-		elseif skill 'magery' >= 80
-			@clearlist 'actions'
-			@pushlist 'actions' 'elemental'
-		elseif skill 'magery' >= 70
-			@clearlist 'actions'
-			@pushlist 'actions' 'inv'
-		elseif skill 'magery' < 70
-			headmsg 'Idz do noob dng'
-			stop
-		endif
-	endif
-
-    // 
-    // Reg check
-    // 
-    if not @inlist! 'actions' 'restock'
-        // train regs
-        sysmsg 'Sprawdzam ziola' 0x33
-        for 0 to 'trainregs'
-            if @counttype trainregs[] 'any' 'backpack' < 10
-                @clearlist 'actions'
-                sysmsg "I need to restock trainregs" 44
-                pushlist 'actions' 'restock'
-                continue
-            endif
-        endfor
+  //
+  // Magery 100 check
+  //
+  if @inlist! 'actions' 'checkSkill'
+    @clearlist 'actions'
+    if skill 'magery' == 100
+      headmsg "Im done! woohoo!"
+      stop
+    elseif skill 'magery' >= 80
+      @clearlist 'actions'
+      @pushlist 'actions' 'elemental'
+    elseif skill 'magery' >= 70
+      @clearlist 'actions'
+      @pushlist 'actions' 'inv'
+    elseif skill 'magery' < 70
+      headmsg 'Idz do noob dng'
+      stop
     endif
-
-    //
-    // Restock regs
-    //
-    if @inlist! 'actions' 'restock'
-        sysmsg "Checking / restocking regs" 88
-        pause 200
+  endif
+  //
+  // Reg check
+  //
+  if not @inlist! 'actions' 'restock'
+    // train regs
+    sysmsg 'Sprawdzam ziola' 0x33
+    for 0 to 'trainregs'
+      if @counttype trainregs[] 'any' 'backpack' < 10
         @clearlist 'actions'
-
-		waitforcontext 'shelf' 1 5000
-		
-		@pushlist 'actions' 'checkSkill'
-    endif
-
-
-    // 
-    // Summon Earth Elemental
-    // 
-    if @inlist! 'actions' 'elemental'
-        pause 200
-        @clearlist 'actions'
-        //
-        // INSERT TRAINING SEQUENCE HERE
-        //
-        // START > 
-        if mana < 50
-            useskill 'meditation'
-            while mana < maxmana
-                pause 1000
-            endwhile
-        endif
-        if mana > 50
-            cast "Summon Earth Elemental"
-            pause 6000
-            msg 'an earth elemental release'
-            pause 1000
-        endif
-        pushlist 'actions' 'elemental'
-    endif
-	
-	if @inlist! 'actions' 'inv'
-        pause 200
-        @clearlist 'actions'
-        //
-        // INSERT TRAINING SEQUENCE HERE
-        //
-        // START > 
-        if mana < 20
-            useskill 'meditation'
-            while mana < maxmana
-                pause 1000
-            endwhile
-        endif
-        if mana > 20
-            cast "Invisibility"
-            pause 2100
-			target 'self'
-        endif
-        pushlist 'actions' 'inv'
-    endif
-
+        sysmsg "I need to restock trainregs" 44
+        pushlist 'actions' 'restock'
+        continue
+      endif
+    endfor
+  endif
+  //
+  // Restock regs
+  //
+  if @inlist! 'actions' 'restock'
+    sysmsg "Checking / restocking regs" 88
     pause 200
-	
-	@pushlist 'actions' 'checkSkill'
+    @clearlist 'actions'
+    waitforcontext 'shelf' 1 5000
+    @pushlist 'actions' 'checkSkill'
+  endif
+  //
+  // Summon Earth Elemental
+  //
+  if @inlist! 'actions' 'elemental'
+    pause 200
+    @clearlist 'actions'
+    //
+    // INSERT TRAINING SEQUENCE HERE
+    //
+    // START >
+    if mana < 50
+      useskill 'meditation'
+      while mana < maxmana
+        pause 1000
+      endwhile
+    endif
+    if mana > 50
+      cast "Summon Earth Elemental"
+      pause 6000
+      msg 'an earth elemental release'
+      pause 1000
+    endif
+    pushlist 'actions' 'elemental'
+  endif
+  if @inlist! 'actions' 'inv'
+    pause 200
+    @clearlist 'actions'
+    //
+    // INSERT TRAINING SEQUENCE HERE
+    //
+    // START >
+    if mana < 20
+      useskill 'meditation'
+      while mana < maxmana
+        pause 1000
+      endwhile
+    endif
+    if mana > 20
+      cast "Invisibility"
+      pause 2100
+      target 'self'
+    endif
+    pushlist 'actions' 'inv'
+  endif
+  pause 200
+  @pushlist 'actions' 'checkSkill'
 endwhile
