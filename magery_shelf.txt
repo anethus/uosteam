@@ -85,11 +85,14 @@ while not dead
     //
     // START >
     if mana < 50
-      useskill 'meditation'
-      while mana < maxmana
-        pause 1000
+      while not buffexists "Meditation"
+        useskill 'Meditation'
+        pause 5200
       endwhile
-    endif
+      while not mana == maxmana
+        pause 500
+        endwhile
+      endif
     if mana > 50
       cast "Summon Earth Elemental"
       pause 6000
@@ -106,10 +109,14 @@ while not dead
     //
     // START >
     if mana < 20
-      useskill 'meditation'
-      while mana < maxmana
-        pause 1000
+      while not buffexists "Meditation"
+        useskill 'Meditation'
+        pause 5200
       endwhile
+      while not mana == maxmana
+        pause 500
+        endwhile
+      endif
     endif
     if mana > 20
       cast "Invisibility"

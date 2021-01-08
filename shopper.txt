@@ -143,11 +143,16 @@ while not dead
     // mana
     if mana < 20
       sysmsg 'Malo many, pomedytuje' 0x11
-      useskill 'meditation'
-      while not mana == maxmana
-        pause 500
-      endwhile
-      sysmsg 'text'
+      if mana != maxmana
+        while not buffexists "Meditation"
+          useskill 'Meditation'
+          pause 5200
+        endwhile
+        while not mana == maxmana
+          pause 500
+        endwhile
+        sysmsg 'No Full many, czas w droge'
+      endif
     endif
   endif
   if @inlist! 'actions' 'wait'
@@ -235,4 +240,3 @@ while not dead
   //
   pushlist 'actions' 'buy'
 endwhile
-

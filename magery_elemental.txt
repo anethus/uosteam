@@ -7,10 +7,6 @@ if not findalias 'bankbag'
     sysmsg "Select a bag with reagents in your bank" 88
     promptalias 'bankbag'
 endif
-if not findalias 'banker'
-    sysmsg "Select the banker at your bank" 88
-    promptalias 'banker'
-endif
 
 //
 // Actions list
@@ -91,10 +87,13 @@ while not dead
         //
         // START > 
         if mana < 50
-            useskill 'meditation'
-            while mana < maxmana
-                pause 1000
-            endwhile
+			while not buffexists "Meditation"
+			  useskill 'Meditation'
+			  pause 5200
+			endwhile
+			while not mana == maxmana
+			  pause 500
+			endwhile
         endif
         if mana > 50
             cast "Summon Earth Elemental"
