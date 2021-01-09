@@ -1,0 +1,60 @@
+if not @findobject 'mats'
+  headmsg 'Target Scrolls and Cloth Container' 57
+  promptalias 'mats'
+endif
+
+if not listexists 'mats'
+  @createlist 'mats'
+endif
+if list 'mats' == 0
+  @pushlist 'mats' 0xef3 // blancScroll
+endif
+
+//blank scrolls
+if @findtype 0xef3 '0' 'backpack' and @amount 'found' <= 20
+  useobject 'mats'
+  pause 700
+  movetype 0xef3 'mats' 'backpack' 1 0 0 0 100
+  pause 1000
+endif
+
+//pens
+if @findtype 0xfc0 '0' 'backpack' and @amount 'found' <= 2
+  useobject 'mats'
+  pause 700
+  movetype 0xfc0 'mats' 'backpack' 1 0 0 0 2
+  pause 1000
+endif
+
+while not dead
+  @findtype 0xfc0 'any' 'backpack'
+  @useobject 'found'
+  waitforgump 0x38920abd 5000
+  replygump  0x38920abd 106
+  waitforgump 0x38920abd 5000
+  replygump  0x38920abd 207
+
+
+  //ready scrolls
+  if @findtype 0x1f4c '0' 'backpack' @amount 'found' >= 100
+    useobject 'mats'
+    pause 700
+    movetype 0x1f4c 'bakcpakc' 'mats' 1 0 0 0  100
+    pause 1000
+  endif
+  //blank scrolls
+  if @findtype 0xef3 '0' 'backpack' and @amount 'found' <= 20
+    useobject 'mats'
+    pause 700
+    movetype 0xef3 'mats' 'backpack' 1 0 0 0 100
+    pause 1000
+  endif
+  //pens
+  if @findtype 0x0fc0 '0' 'backpack' and @amount 'found' <= 2
+    useobject 'mats'
+    pause 700
+    movetype 0xfc0 'mats' 'backpack' 1 0 0 0 2
+    pause 1000
+  endif
+
+endwhile
