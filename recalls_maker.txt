@@ -3,13 +3,6 @@ if not @findobject 'mats'
   promptalias 'mats'
 endif
 
-if not listexists 'mats'
-  @createlist 'mats'
-endif
-if list 'mats' == 0
-  @pushlist 'mats' 0xef3 // blancScroll
-endif
-
 //blank scrolls
 if @findtype 0xef3 '0' 'backpack' and @amount 'found' <= 20
   useobject 'mats'
