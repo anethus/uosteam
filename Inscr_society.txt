@@ -254,8 +254,9 @@ while not dead
     movetype 0xef3 'mats' 'backpack' 1 0 0 0 100
     pause 1000
   endif
-  if @findtype 0xefa '0' 'backpack' '15'
-    if @inlist 'scrolls' 'Spellbook'
+  
+  if counttype 0x22c5 '0' 'backpack' >= 10
+    if findtype 0x22c5 '0' 'backpack'
       replygump 0x38920abd 3
       waitforgump 0x38920abd 5000
       pause 10
@@ -264,6 +265,16 @@ while not dead
     endif
   endif
 
+  if counttype 0xefa '0' 'backpack' >= 10
+    if findtype 0xefa '0' 'backpack'
+      replygump 0x38920abd 3
+      waitforgump 0x38920abd 5000
+      pause 10
+      target 'found'
+      pause 10
+    endif
+  endif
+  
   //
   // World save check
   //
