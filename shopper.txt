@@ -108,8 +108,9 @@ while not dead
       sysmsg 'Koniec runebookow, odpoczywamy' 0x11
       // restore runebook list
       for 0 to 'backupRunebooks'
+	    sysmsg 'przenosze' 0x11
         @setalias 'backupRune' 'backupRunebooks[0]'
-        @poplist! 'backupRunebooks' 'back'
+        @poplist! 'backupRunebooks' 'front'
         @pushlist! 'Runebooks' 'backupRune'
       endfor
       @clearlist 'actions'
