@@ -254,15 +254,13 @@ while not dead
     movetype 0xef3 'mats' 'backpack' 1 0 0 0 100
     pause 1000
   endif
-  if diffweight < 100
-    if @findtype 0xefa '0' 'backpack' 'any'
-      if @inlist 'scrolls' 'Spellbook'
-        replygump 0x38920abd 3
-        waitforgump 0x38920abd 5000
-        pause 10
-        target 'found'
-        pause 10
-	  endif
+  if @findtype 0xefa '0' 'backpack' '15'
+    if @inlist 'scrolls' 'Spellbook'
+      replygump 0x38920abd 3
+      waitforgump 0x38920abd 5000
+      pause 10
+      target 'found'
+      pause 10
     endif
   endif
 
