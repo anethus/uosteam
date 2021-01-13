@@ -43,18 +43,20 @@ while not dead
     waitfortarget 5000
     target! 'self'
     pause 500
+    waitforcontext 'shelf' 1 5000
+    pause 500
   endif
   
   for 0 to 'scriptregs'
     if @counttype scriptregs[] 'any' 'backpack' < 8
-      waitforcontext 'shelf' 1 5000
-      pause 500
+      sysmsg 'Problem z ziolami' 0x11
+      stop
     endif
   endfor
   
   if counttype 0xe79 '0' 'backpack' <= 10
     sysmsg 'Problem z odnowieniem Pouchy' 0x11
-	stop
+    stop
   endif
 
   if mana < 20
