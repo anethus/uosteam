@@ -1,0 +1,84 @@
+////////////////////////////////////////
+// TrapedPouch Maker
+//
+// 1. Ustaw Restow w szafie by bral:
+//    Siarki ponad 20
+//    Spider Silk ponad 20
+//    Garlic ponad 20
+//    Czystych Pouchy ponad 20
+// 2. Odpal Makro
+// 3. Wskaz Storage Shelf
+// 4. Jak bedziesz mial dosc to daj Stop Makro
+//////////////////////////////////////////
+
+@unsetalias 'shelf'
+//
+// Set alias'
+//
+if not @findalias 'shelf'
+  sysmsg "Select storage shelf"
+  promptalias 'shelf'
+endif
+
+@removelist 'scriptregs'
+@createlist 'scriptregs'
+pushlist 'scriptregs' 0xf84 // garlic
+pushlist 'scriptregs' 0xf8c // ash
+pushlist 'scriptregs' 0xf8d // silk
+
+//restock
+waitforcontext 'shelf' 0 5000
+waitfortarget 5000
+target! 'self'
+pause 500
+
+//Resupply
+waitforcontext 'shelf' 1 5000
+pause 500
+
+while not dead
+  if counttype 0xe79 '38' 'backpack' >= 10
+    sysmsg 'Za duzo trapedPouchy' 0x11
+	waitforcontext 'shelf' 0 5000
+    waitfortarget 5000
+    target! 'self'
+    pause 500
+  endif
+  
+  for 0 to 'scriptregs'
+    if @counttype scriptregs[] 'any' 'backpack' < 8
+	  sysmsg 'Problem z odnowieniem ziol' 0x11
+	  stop
+    endif
+  endfor
+  
+  if counttype 0xe79 '0' 'backpack' <= 10
+    sysmsg 'Problem z odnowieniem Pouchy' 0x11
+	stop
+  endif
+
+  if mana < 20
+    sysmsg 'Malo many, pomedytuje' 0x11
+    if mana != maxmana
+      while not buffexists "Meditation"
+        useskill 'Meditation'
+        pause 5200
+      endwhile
+      while not mana == maxmana
+        pause 500
+      endwhile
+      sysmsg 'No Full many, czas w droge'
+    endif
+  endif
+  
+  pause 500	
+
+  cast 'Magic Trap'
+  pause 500
+  waitingfortarget 5000
+  if @findtype 0xe79 '0' 'backpack'
+    @target 'found'
+	pause 500
+  endif
+
+endwhile
