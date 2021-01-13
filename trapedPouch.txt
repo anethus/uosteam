@@ -42,7 +42,7 @@ while not dead
 	waitforcontext 'shelf' 0 5000
     waitfortarget 5000
     target! 'self'
-    pause 500
+    pause 1500
   endif
   
   for 0 to 'scriptregs'
