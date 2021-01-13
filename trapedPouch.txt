@@ -39,16 +39,16 @@ pause 500
 while not dead
   if counttype 0xe79 '38' 'backpack' >= 10
     sysmsg 'Za duzo trapedPouchy' 0x11
-	waitforcontext 'shelf' 0 5000
+    waitforcontext 'shelf' 0 5000
     waitfortarget 5000
     target! 'self'
-    pause 1500
+    pause 500
   endif
   
   for 0 to 'scriptregs'
     if @counttype scriptregs[] 'any' 'backpack' < 8
-	  sysmsg 'Problem z odnowieniem ziol' 0x11
-	  stop
+      waitforcontext 'shelf' 1 5000
+      pause 500
     endif
   endfor
   
