@@ -7,7 +7,6 @@
 // 3. Select shelf
 // 2. Enjoy
 //////////////////////////////////
-
 @useobject 'backpack'
 pause 1000
 if not findalias 'shelf'
@@ -92,13 +91,14 @@ while not dead
       while not mana == maxmana
         pause 500
       endwhile
-    if mana > 50
-      cast "Summon Earth Elemental"
-      pause 6000
-      msg 'an earth elemental release'
-      pause 1000
+      if mana > 50
+        cast "Summon Earth Elemental"
+        pause 6000
+        msg 'an earth elemental release'
+        pause 1000
+      endif
+      pushlist 'actions' 'elemental'
     endif
-    pushlist 'actions' 'elemental'
   endif
   if @inlist! 'actions' 'inv'
     pause 200
@@ -114,8 +114,7 @@ while not dead
       endwhile
       while not mana == maxmana
         pause 500
-        endwhile
-      endif
+      endwhile
     endif
     if mana > 20
       cast "Invisibility"
