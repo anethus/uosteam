@@ -53,7 +53,6 @@ while not dead
   //
   if not @inlist! 'actions' 'restock'
     // train regs
-    sysmsg 'Sprawdzam ziola' 0x33
     for 0 to 'trainregs'
       if @counttype trainregs[] 'any' 'backpack' < 10
         @clearlist 'actions'
@@ -91,15 +90,15 @@ while not dead
       while not mana == maxmana
         pause 500
       endwhile
-      if mana > 50
+	endif
+    if mana > 50
         cast "Summon Earth Elemental"
         pause 6000
         msg 'an earth elemental release'
         pause 1000
-      endif
-      pushlist 'actions' 'elemental'
     endif
-  endif
+    pushlist 'actions' 'checkSkill'
+    endif
   if @inlist! 'actions' 'inv'
     pause 200
     @clearlist 'actions'
@@ -121,7 +120,7 @@ while not dead
       pause 2100
       target 'self'
     endif
-    pushlist 'actions' 'inv'
+    pushlist 'actions' 'checkSkill'
   endif
   pause 200
   @pushlist 'actions' 'checkSkill'
