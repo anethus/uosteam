@@ -3,8 +3,6 @@ sysmsg "UO Outlands Lumber" 88
 @removelist 'Runes'
 createlist 'Runes'
 @clearjournal
-@createtimer 'Track'
-@settimer 'Track' 5001
 @useobject 'backpack'
 clearhands 'both'
 pause 1000
@@ -52,6 +50,22 @@ if not findalias 'banker'
   promptalias 'banker'
 endif
 //
+// Tracking window
+//
+useskill 'Tracking'
+pause 1000
+if @gumpexists 0xfe5c638b
+  if @ingump 0xfe5c638b 'Begin Hunting'
+    sysmsg 'You begin hunting' 0x11
+    replygump 0xfe5c638b 6
+    pause 1000
+  else
+    sysmsg 'you are hunting' 0x11
+  endif
+  replygump 0xfe5c638b 0
+endif
+
+//
 // Actions list
 //
 @removelist 'actions'
@@ -68,6 +82,7 @@ pushlist 'scriptregs' 0xf86 // root
 pushlist 'scriptregs' 0xf8d // silk
 pushlist 'scriptregs' 0xf85 // ginseng
 pushlist 'scriptregs' 0xf84 // garlic
+useskill 'Hidding'
 while not dead
   //
   // Health check
@@ -123,7 +138,7 @@ while not dead
     // script regs
     for 0 to 'scriptregs'
       if @counttype scriptregs[] 'any' 'backpack' < 10
-	    sysmsg 'ziola' 0x11
+        sysmsg 'ziola' 0x11
         @clearlist 'actions'
         pushlist 'actions' 'dumprestock'
         break
@@ -132,25 +147,25 @@ while not dead
     // axe 0xf44
     if not @findlayer 'self' 2
       if @counttype 0xf44 'any' 'backpack' < 1
-		sysmsg 'brak siekier' 0x11
+        sysmsg 'brak siekier' 0x11
         @clearlist 'actions'
         pushlist 'actions' 'dumprestock'
       endif
     endif
     // weight
     if diffweight < 300
-	  sysmsg 'waga' 0x11
+      sysmsg 'waga' 0x11
       @clearlist 'actions'
       pushlist 'actions' 'dumprestock'
     endif
-	 //
-	 // check when have more then 1200 logs
-	 //
-	 if @findtype 0x1bdd '0' 'backpack' '1200'
-	   sysmsg 'za duzo dech' 0x11
-	   @clearlist 'actions'
-	   pushlist 'actions' 'dumprestock'
-	 endif
+    //
+    // check when have more then 1200 logs
+    //
+    if @findtype 0x1bdd '0' 'backpack' '800'
+      sysmsg 'za duzo dech' 0x11
+      @clearlist 'actions'
+      pushlist 'actions' 'dumprestock'
+    endif
   endif
   //
   // Dump and/or Restock
@@ -190,17 +205,31 @@ while not dead
       // Reg restocking is extremely unreliable!
       //
       for 0 to 'scriptregs'
-        removetimer 'restock'
-        createtimer 'restock'
-        while counttype scriptregs[] 'any' 'backpack' < 15
-          sysmsg "restocking reagent" 55
-          movetype scriptregs[] 'box' 'backpack' 0 0 0 'any' 25
-          pause 1500
-          if timer 'restock' > 30000
-            sysmsg "I cannot restock regs!" 55
-            playsound 'buzzer.wav'
-            stop
-          endif
+        while counttype scriptregs[] 'any' 'backpack' < 20
+          while counttype 0xf7a 'any' 'backpack' < 20
+            @movetype! 0xf7a 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
+          while counttype 0xf7b 'any' 'backpack' < 20
+            @movetype! 0xf7b 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
+          while counttype 0xf86 'any' 'backpack' < 20
+            @movetype! 0xf86 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
+          while counttype 0xf8d 'any' 'backpack' < 20
+            @movetype! 0xf8d 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
+          while counttype 0xf85 'any' 'backpack' < 20
+            @movetype! 0xf85 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
+          while counttype 0xf84 'any' 'backpack' < 20
+            @movetype! 0xf84 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
         endwhile
       endfor
       //
@@ -220,12 +249,12 @@ while not dead
       endwhile
       //
       // Logs 0x1bdd
-	  // Boards 0x1bd7
+      // Boards 0x1bd7
       //
       while @findtype 0x1bdd 'any' 'backpack'
-		sysmsg "Creating boards from logs" 55
-		useobject 'found'
-		pause 1000
+        sysmsg "Creating boards from logs" 55
+        useobject 'found'
+        pause 1000
         sysmsg "Dumping boards" 0x55
         movetype 0x1bd7 'backpack' 'box' 0 0 0 'any'
         pause 1000
@@ -239,7 +268,6 @@ while not dead
         pause 1000
       endwhile
     endif
-	
     //
     // Go mining
     //
@@ -327,24 +355,10 @@ while not dead
           // Mine
           //
           if not war self
-		    @canceltarget
+            @canceltarget
             useobject 'lefthand'
             waitfortarget 2000
             target! 'self'
-            pause 500
-          endif
-          //
-          // Tracking window
-          //
-          if timer 'track' > 6000
-            useskill 'Tracking'
-            pause 1000
-            if @gumpexists 0xfe5c638b
-              @settimer 'track' 0
-              replygump 0xfe5c638b 5
-              pause 1000
-            endif
-          else
             pause 500
           endif
           //
