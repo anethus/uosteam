@@ -85,7 +85,7 @@ endif
 //
 // Set box
 //
-@unsetalias 'box'
+//@unsetalias 'box'
 if not findalias 'box'
   sysmsg "Select a box with leather" 88
   promptalias 'box'
