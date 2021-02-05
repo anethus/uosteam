@@ -1,0 +1,424 @@
+/////////////////////////////////////////////
+sysmsg "UO Outlands Lumber" 88
+@removelist 'Runes'
+createlist 'Runes'
+@clearjournal
+@useobject 'backpack'
+clearhands 'both'
+pause 1000
+msg "bank"
+pause 1000
+//
+// Set box
+//
+if not findalias 'box'
+  sysmsg "Select a box with regs, picks and where ore will be placed" 88
+  promptalias 'box'
+endif
+@cleartargetqueue
+//
+// Prompt runebooks
+//
+if not listexists 'Runebooks'
+  sysmsg "When prompted select runebook after another" 88
+  sysmsg "When all runebooks are selected, press ESC" 88
+  @createlist 'Runebooks'
+  for 99
+    sysmsg "Select next runebook" 88
+    promptalias 'book'
+    if @findobject 'book'
+      @pushlist! 'Runebooks' 'book'
+      sysmsg "Your Runebook has been saved, press ESC if you have no more books" 44
+    else
+      break
+    endif
+  endfor
+  sysmsg "Thank you, Runebooks saved" 44
+endif
+//
+// Check runebooks
+//
+if list 'Runebooks' == 0
+  sysmsg "You didnt select any Runebooks..."
+  stop
+endif
+//
+// Set banker (or box)
+//
+if not findalias 'banker'
+  sysmsg "Select the banker at your bank or BOX if running from home" 88
+  promptalias 'banker'
+endif
+//
+// Tracking window
+//
+useskill 'Tracking'
+pause 1000
+if @gumpexists 0xfe5c638b
+  if @ingump 0xfe5c638b 'Begin Hunting'
+    sysmsg 'You begin hunting' 0x11
+    replygump 0xfe5c638b 6
+    pause 1000
+  else
+    sysmsg 'you are hunting' 0x11
+  endif
+  replygump 0xfe5c638b 0
+endif
+
+//
+// Actions list
+//
+@removelist 'actions'
+@createlist 'actions'
+pushlist 'actions' 'dumprestock'
+//
+// Script Regs (stocks 10)
+//
+@removelist 'scriptregs'
+@createlist 'scriptregs'
+pushlist 'scriptregs' 0xf7a // pearl
+pushlist 'scriptregs' 0xf7b // moss
+pushlist 'scriptregs' 0xf86 // root
+pushlist 'scriptregs' 0xf8d // silk
+pushlist 'scriptregs' 0xf85 // ginseng
+pushlist 'scriptregs' 0xf84 // garlic
+useskill 'Hidding'
+while not dead
+  //
+  // Health check
+  //
+  while diffhits > 1
+    headmsg "Something is hurting me!" 55
+    @canceltarget
+    cast "Recall"
+    waitfortarget 5000
+    target! 'Runebooks[0]'
+    playsound 'buzzer.wav'
+    pause 5000
+    cast 'Greater Heal'
+    waitfortarget 5000
+    target! 'self'
+    continue
+  endwhile
+  //
+  // Rune list check
+  //
+  if list 'Runes' == 0
+    //
+    // Bump book
+    //
+    sysmsg "Updating runebook alias" 44
+    setalias 'book' 'Runebooks[0]'
+    @poplist! 'Runebooks' 'front'
+    @pushlist! 'Runebooks' 'book'
+    //
+    // Set rune locations
+    //
+    @pushlist 'Runes' 11
+    @pushlist 'Runes' 17
+    @pushlist 'Runes' 23
+    @pushlist 'Runes' 29
+    @pushlist 'Runes' 35
+    @pushlist 'Runes' 41
+    @pushlist 'Runes' 47
+    @pushlist 'Runes' 53
+    @pushlist 'Runes' 59
+    @pushlist 'Runes' 65
+    @pushlist 'Runes' 71
+    @pushlist 'Runes' 77
+    @pushlist 'Runes' 83
+    @pushlist 'Runes' 89
+    @pushlist 'Runes' 95
+  endif
+  //
+  // Check : regs, weight, picks
+  //
+  if not @inlist! 'actions' 'dumprestock'
+    sysmsg 'sprawdzam status' 0x11
+    // script regs
+    for 0 to 'scriptregs'
+      if @counttype scriptregs[] 'any' 'backpack' < 10
+        sysmsg 'ziola' 0x11
+        @clearlist 'actions'
+        pushlist 'actions' 'dumprestock'
+        break
+      endif
+    endfor
+    // axe 0xf44
+    if not @findlayer 'self' 2
+      if @counttype 0xf44 'any' 'backpack' < 1
+        sysmsg 'brak siekier' 0x11
+        @clearlist 'actions'
+        pushlist 'actions' 'dumprestock'
+      endif
+    endif
+    // weight
+    if diffweight < 300
+      sysmsg 'waga' 0x11
+      @clearlist 'actions'
+      pushlist 'actions' 'dumprestock'
+    endif
+    //
+    // check when have more then 1200 logs
+    //
+    if @findtype 0x1bdd '0' 'backpack' '800'
+      sysmsg 'za duzo dech' 0x11
+      @clearlist 'actions'
+      pushlist 'actions' 'dumprestock'
+    endif
+  endif
+  //
+  // Dump and/or Restock
+  //
+  if @inlist! 'actions' 'dumprestock'
+    sysmsg "Heading to dump and restock" 88
+    pause 200
+    @clearlist 'actions'
+    //
+    // check if we are at bank/home
+    //
+    msg 'bank'
+    pause 1000
+    if not @findobject 'banker'
+      // mana to recall
+      while mana < 15
+        useskill 'meditation'
+        pause 6000
+      endwhile
+      // recall
+      @canceltarget
+      cast "Recall"
+      waitfortarget 5000
+      target! 'Runebooks[0]'
+      pause 2500
+    endif
+    //
+    // check if we are at bank/home
+    //
+    if @findobject 'banker'
+      msg 'bank'
+      useskill 'hiding'
+      pause 1000
+      @useobject 'box'
+      pause 1000
+      //
+      // Reg restocking is extremely unreliable!
+      //
+      for 0 to 'scriptregs'
+        while counttype scriptregs[] 'any' 'backpack' < 20
+          while counttype 0xf7a 'any' 'backpack' < 20
+            @movetype! 0xf7a 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
+          while counttype 0xf7b 'any' 'backpack' < 20
+            @movetype! 0xf7b 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
+          while counttype 0xf86 'any' 'backpack' < 20
+            @movetype! 0xf86 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
+          while counttype 0xf8d 'any' 'backpack' < 20
+            @movetype! 0xf8d 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
+          while counttype 0xf85 'any' 'backpack' < 20
+            @movetype! 0xf85 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
+          while counttype 0xf84 'any' 'backpack' < 20
+            @movetype! 0xf84 'box' 'backpack' 0 0 0 'any' 5
+            pause 500
+          endwhile
+        endwhile
+      endfor
+      //
+      // Restock picks
+      //
+      removetimer 'restock'
+      createtimer 'restock'
+      while @counttype 0xf44 'any' 'backpack' < 1
+        sysmsg "restocking picks" 55
+        movetype 0xf44 'box' 'backpack' 0 0 0 'any' 1
+        pause 1500
+        if timer 'restock' > 30000
+          sysmsg "I cannot restock picks!" 55
+          playsound 'buzzer.wav'
+          stop
+        endif
+      endwhile
+      //
+      // Logs 0x1bdd
+      // Boards 0x1bd7
+      //
+      while @findtype 0x1bdd 'any' 'backpack'
+        sysmsg "Creating boards from logs" 55
+        useobject 'found'
+        pause 1000
+        sysmsg "Dumping boards" 0x55
+        movetype 0x1bd7 'backpack' 'box' 0 0 0 'any'
+        pause 1000
+      endwhile
+      //
+      // Dump seeds
+      //
+      while @findtype 0x5736 'any' 'backpack'
+        sysmsg "Dumping seeds" 55
+        movetype 0x5736 'backpack' 'box' 0 0 0 'any'
+        pause 1000
+      endwhile
+    endif
+    //
+    // Go mining
+    //
+    pushlist 'actions' 'mine'
+  endif
+  //
+  // Recall to next spot, mine
+  //
+  if @inlist 'actions' 'mine'
+    pause 500
+    useobject 'Runebooks[0]'
+    waitforgump 0x5c7db029 15000
+    replygump 0x5c7db029 Runes[0]
+    pause 2000
+    poplist! 'Runes' 'front'
+    //
+    // Drop any spellbooks
+    //
+    @clearhands 'both'
+    //
+    // Mine
+    //
+    @clearjournal
+    //
+    // Movements
+    //
+    @removelist 'moves'
+    @createlist 'moves'
+    pushlist 'moves' ''
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    pushlist 'moves' 'SouthEast'
+    while list 'moves' > 0
+      msg 'all guard me'
+      @clearjournal
+      if not war self
+        turn 'moves[0]'
+        for 0 to 2
+          walk 'moves[0]'
+          pause 250
+        endfor
+        poplist 'moves' 'front'
+        while not @injournal 'You do not see any harvestable resources nearby.' 'system'
+          //
+          // Equip pick 0xe86 // Axe 0xf44
+          //
+          if not @findlayer 'self' 2
+            @findtype 0xf44 'any' 'backpack'
+            canceltarget
+            @useobject 'found'
+            pause 1500
+          endif
+          //
+          // Pick check
+          //
+          if not @findlayer 'self' 2
+            msg "darnit! my pick broke!"
+            @clearlist 'moves'
+            break
+          endif
+          //
+          // Health check
+          //
+          if hits < maxhits
+            @clearlist 'moves'
+            break
+          endif
+          //
+          // Mine
+          //
+          if not war self
+            @canceltarget
+            useobject 'lefthand'
+            waitfortarget 2000
+            target! 'self'
+            pause 500
+          endif
+          //
+          // Tracking Alerts
+          //
+          if @injournal "now tracking" 'system'
+            headmsg "ALARM! ALARM!" 22
+            @canceltarget
+            cast "Recall"
+            waitfortarget 5000
+            target! 'Runebooks[0]'
+            @clearlist 'moves'
+            pause 5000
+            @clearjournal
+            break
+          endif
+          //
+          // Proximity Alerts
+          //
+          @getenemy 'murderer' 'enemy' 'next'
+          if @findobject 'enemy' and @inrange 'enemy' 12
+            headmsg "ALARM! ALARM!" 22
+            @canceltarget
+            cast "Recall"
+            waitfortarget 5000
+            target! 'Runebooks[0]'
+            @clearlist 'moves'
+            pause 5000
+            @clearjournal
+            break
+          endif
+          //
+          // Weight
+          //
+          if diffweight < 3
+            @clearlist 'moves'
+            break
+            continue
+          endif
+        endwhile
+        //
+        // Another check
+        //
+        if @injournal "now tracking" 'system'
+          headmsg "ALARM! ALARM!" 22
+          @canceltarget
+          cast "Recall"
+          waitfortarget 5000
+          target! 'Runebooks[0]'
+          @clearjournal
+          pause 5000
+          break
+        endif
+      endif
+    endwhile
+    pause 1000
+  endif
+  //
+  // Default action
+  //
+  pushlist 'actions' 'mine'
+endwhile
