@@ -1,0 +1,54 @@
+@unsetalias 'mats'
+if not @findobject 'mats'
+  headmsg 'Pojemnik ze zwojami' 57
+  promptalias 'mats'
+endif
+if not @findobject 'recallSzafa'
+  headmsg 'Pokaz mi szafe' 57
+  promptalias 'recallSzafa'
+endif
+//blank scrolls
+if not @findtype 0xef3 '0' 'backpack' '10'
+  sysmsg 'sprawdzam blank scrolle' 0x11
+  useobject 'mats'
+  pause 700
+  movetype 0xef3 'mats' 'backpack' 1 0 0 0 100
+  pause 1000
+endif
+//pens
+if not @findtype 0xfc0 '0' 'backpack'
+  sysmsg 'sprawdzam peny' 0x11
+  waitforcontext 'recallSzafa' 1 5000
+  pause 500
+endif
+while not dead
+  @findtype 0xfc0 'any' 'backpack'
+  @useobject 'found'
+  waitforgump 0x38920abd 5000
+  replygump  0x38920abd 106
+  waitforgump 0x38920abd 5000
+  replygump  0x38920abd 207
+  pause 2300
+  //ready scrolls
+  if @findtype 0x1f4c '0' 'backpack' '100'
+    sysmsg 'za duzo recalli' 0x11
+    useobject 'mats'
+    pause 700
+    movetype 0x1f4c 'backpack' 'mats' 1 0 0 0  100
+    pause 1000
+  endif
+  //blank scrolls
+  if not @findtype 0xef3 '0' 'backpack' '10'
+    sysmsg 'sprawdzam blank scrolle' 0x11
+    useobject 'mats'
+    pause 700
+    movetype 0xef3 'mats' 'backpack' 1 0 0 0 100
+    pause 1000
+  endif
+  //pens
+  if not @findtype 0xfc0 '0' 'backpack'
+    sysmsg 'sprawdzam peny' 0x11
+    waitforcontext 'recallSzafa' 1 5000
+    pause 500
+  endif
+endwhile
