@@ -1,0 +1,207 @@
+/////////////////////////////////////////////
+// UO Steam Tailoring Macro
+// for Outlands
+//
+// Stocks a shelf with _sets_ of exceptional leather items. Will loop itself
+// making as many items as long as you have leather and sewing kits. Non-exceptional
+// are salvaged automatically.
+//
+// Steps for using:
+// ----------------
+// 1) Have a shelf nearby
+// 2) Modify the code for what you want to make.
+// 3) Have leather in your backpack and crafting gump selected for its type
+// 4) Make sure you have sewing kits in pack
+// 5) !IMPORTANT : Set your smelt option to 'Recycle All (of Type)'
+//
+// Version 1.0
+// -----------
+// * Initial version
+//
+// Version 2.0
+// -----------
+// * Lol OK, now it works. Tried to make without a shelf and didn't understand
+//   how shelves worked. Tested now with an actual shelf.
+//
+// Version 3.0
+// -----------
+// * Removed use of scissors (since cutting was disabled)
+//
+// Remember, if you change shelves, clear active objects first.
+//
+/////////////////////////////////////////////
+@removelist 'make'
+@createlist 'make'
+@removelist 'cnt'
+@createlist 'cnt'
+//
+// Add or comment out items to make
+// This comprises your 'set'
+// MODIFY START
+// ----------->
+@pushlist! 'make' 'Gloves'
+@pushlist! 'make' 'Sleeves'
+@pushlist! 'make' 'Tunic'
+@pushlist! 'make' 'Pants'
+@pushlist! 'make' 'Gorget'
+@pushlist! 'make' 'Cap'
+
+///////////////////////////////////////
+//
+//	Set numbers of sets to doesnt
+//	for example to make 1000 sets put:
+//	`for 0 to 1000`
+//
+//////////////////////////////////////
+for 0 to 10
+  pushlist 'cnt' 0x0
+  pause 1
+endfor
+
+// <-----------
+// MODIFY END
+//
+//
+// Open backpack
+//
+
+@useobject 'backpack'
+pause 1000
+//
+// Set alias'
+//
+if not @findalias 'shelf'
+  sysmsg "Select storage shelf"
+  promptalias 'shelf'
+endif
+
+//
+// Set box
+//
+if not findalias 'box'
+  sysmsg "Select a box with ingots" 88
+  promptalias 'box'
+endif
+
+
+//
+// Check weight
+//
+if diffweight < 10
+  headmsg 'I am too heavy, please unload me' '88'
+  pause 5000
+  stop
+endif
+
+@removelist 'typeids'
+@createlist 'typeids'
+@pushlist 'typeids' 0x1418 //Gloves
+@pushlist 'typeids' 0x1417 //Sleeves
+@pushlist 'typeids' 0x1416 //Tunic
+@pushlist 'typeids' 0x141a //Pants
+@pushlist 'typeids' 0x1413 //Gorget
+@pushlist 'typeids' 0x1412 //Cap
+
+while list 'make' > 0
+  //
+  // Check leather and take
+  //
+  if counttype 0x1bf2 'any' 'backpack' < 15
+    headmsg 'Taking ingots form box!' 66
+    movetype 0x1bf2 'box' 'backpack' 0 0 0 'any' '300'
+    pause 1000
+  endif
+  //
+  // Check leather after take
+  //
+  if counttype 0x1bf2 'any' 'backpack' < 15
+    headmsg 'I have no ingots!' 66
+    stop
+  endif
+  
+  //
+  // Check tongs kits
+  //
+  if not @findtype 0xfbb 'any' 'backpack'
+    waitforcontext 'shelf' 1 5000
+  endif
+  //
+  // Use 3x = sometimes server doesnt respond
+  //
+  useobject 'found'
+  pause 100
+  useobject 'found'
+  pause 100
+  useobject 'found'
+  pause 100
+  headmsg make[0] 72
+  //
+  // Craft gump
+  //
+  waitforgump 0x38920abd 5000
+  //
+  // Have to convert hex to decimal for list checks
+  //
+  if @inlist 'make' 'Gloves'
+    replygump 0x38920abd 102
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 201
+  elseif @inlist 'make' 'Sleeves'
+    replygump 0x38920abd 102
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 203
+  elseif @inlist 'make' 'Tunic'
+    replygump 0x38920abd 102
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 206
+  elseif @inlist 'make' 'Pants'
+    replygump 0x38920abd 102
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 204
+  elseif @inlist 'make' 'Gorget'
+    replygump 0x38920abd 102
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 200
+  elseif @inlist 'make' 'Cap'
+    replygump 0x38920abd 102
+    waitforgump 0x38920abd 15000
+    replygump 0x38920abd 202
+  endif
+  //
+  // Craft
+  //
+  //waitforgump 0x38920abd 50000
+  pause 3000
+  //
+  // Check, shelf, or cut
+  //
+  
+  if @ingump 0x38920abd 'You create an exceptional quality item'
+    headmsg '*Exceptional*' 55
+    waitforcontext 'shelf' 0 5000
+    waitfortarget 5000
+    target! 'self'
+    pause 500
+
+	poplist 'make' 'make[0]'
+  else
+	for 0 to 'typeids'
+	  if findtype 'typeids[]' 'any' 'backpack'
+		pause 500
+		headmsg 'Recycle' 66
+		replygump 0x38920abd 3
+		waitfortarget 5000
+		target! 'found'
+		pause 1000
+	  endif
+	endfor
+  endif
+  
+endwhile
+poplist 'cnt' 'front'
+if list 'cnt' <= 0
+  sysmsg "My work is done, i have to go....." 91
+  stop
+else
+  replay
+endif
