@@ -1,33 +1,6 @@
 /////////////////////////////////////////////
-// UO Steam Tailoring Macro
+// UO Steam BS Macro
 // for Outlands
-//
-// Stocks a shelf with _sets_ of exceptional leather items. Will loop itself
-// making as many items as long as you have leather and sewing kits. Non-exceptional
-// are salvaged automatically.
-//
-// Steps for using:
-// ----------------
-// 1) Have a shelf nearby
-// 2) Modify the code for what you want to make.
-// 3) Have leather in your backpack and crafting gump selected for its type
-// 4) Make sure you have sewing kits in pack
-// 5) !IMPORTANT : Set your smelt option to 'Recycle All (of Type)'
-//
-// Version 1.0
-// -----------
-// * Initial version
-//
-// Version 2.0
-// -----------
-// * Lol OK, now it works. Tried to make without a shelf and didn't understand
-//   how shelves worked. Tested now with an actual shelf.
-//
-// Version 3.0
-// -----------
-// * Removed use of scissors (since cutting was disabled)
-//
-// Remember, if you change shelves, clear active objects first.
 //
 /////////////////////////////////////////////
 @removelist 'make'
