@@ -64,7 +64,6 @@ if @gumpexists 0xfe5c638b
   endif
   replygump 0xfe5c638b 0
 endif
-
 //
 // Actions list
 //
@@ -327,6 +326,9 @@ while not dead
         endfor
         poplist 'moves' 'front'
         while not @injournal 'You do not see any harvestable resources nearby.' 'system'
+          if @injournal 'Harvesting is not allowed in this area.' 'system'
+            break
+          endif
           //
           // Equip pick 0xe86 // Axe 0xf44
           //
